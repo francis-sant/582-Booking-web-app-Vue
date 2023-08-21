@@ -1,7 +1,8 @@
 <template>
   <nav>
     <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+    <router-link to="/about">About</router-link> |
+    <router-link to="/items">Items</router-link> |
   </nav>
   <router-view />
 </template>
@@ -26,5 +27,12 @@ nav {
       color: #42b983;
     }
   }
+}
+
+.titulo {
+  font-size: 2em;
+  margin: 20px;
+  padding: 20px;
+  border: 3px solid lightblue;
 }
 </style>
