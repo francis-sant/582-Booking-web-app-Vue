@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import MyItems from "../views/MyItems.vue";
+import TeacherClasses from "../views/TeacherClasses.vue";
 
 const routes = [
   {
@@ -9,10 +10,23 @@ const routes = [
     component: HomeView,
   },
   {
-    path: "/items",
-    name: "items",
+    path: "/classes",
+    name: "classes",
     component: MyItems,
   },
+  {
+    path: "/teacherclasses",
+    name: "teacherclasses",
+    component: TeacherClasses,
+    children: [
+      {
+        path: "/teacherclasses/booked",
+        name: "teacherclasses",
+        component: TeacherClasses,
+      },
+    ],
+  },
+
   {
     path: "/about",
     name: "about",

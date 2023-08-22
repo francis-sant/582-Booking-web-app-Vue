@@ -10,7 +10,7 @@ const port = 3000;
 
 // MongoDB connection URI
 const uri =
-  "mongodb+srv://francis-sant:YDBfL4OvlJagtV670000@cluster0.tzdfzyh.mongodb.net/?retryWrites=true&w=majority";
+  "mongodb+srv://francis-sant:YDBfL4OvlJagtV67@cluster0.tzdfzyh.mongodb.net/?retryWrites=true&w=majority";
 
 //it will parse the income request body into json for all requests
 app.use(bodyParser.json());
@@ -25,14 +25,14 @@ app.use((req, res, next) => {
 });
 
 //Read route-get request for the route
-app.get("/items", async (req, res) => {
+app.get("/classes", async (req, res) => {
   const client = new MongoClient(uri);
 
   try {
     await client.connect();
-    const database = client.db("mongodemo");
+    const database = client.db("bookingApp");
     // const collection = database.collection("student");
-    const collection = database.collection("items");
+    const collection = database.collection("teacher");
     const result = await collection.find({}).toArray();
     // const result = await collection.findOne(req.params);
 
@@ -56,7 +56,7 @@ app.post("/", async (req, res) => {
     const database = client.db("mongodemo");
     const student = database.collection("student");
 
-    const result = await student.insertOne(req.body); // Use req.body instead of req.params
+    const result = await student.insertOne(req.body);
 
     console.log(result);
     res.send("Data inserted successfully.");
@@ -68,25 +68,53 @@ app.post("/", async (req, res) => {
   }
 });
 
-// // Definir rotdas CRUD aqui
-// app.get("/items/:name", async (req, res) => {
-//   const client = new MongoClient(uri);
-//   const database = client.db("mongodemo");
-//   const collection = database.collection("items");
+app.get("/teacherclasses/booked", async (req, res) => {
+  const client = new MongoClient(uri);
 
-//   const items = await collection.find().toArray();
-//   res.json(items);
-// });
+  try {
+    await client.connect();
+    const database = client.db("bookingApp");
+    // const collection = database.collection("student");
 
-// app.post("/items", async (req, res) => {
-//   const client = new MongoClient(uri);
-//   const database = client.db("mongodemo");
-//   const collection = database.collection("items");
+    const collection = database.collection("teacher");
+    const result = await collection.find({}).toArray();
+    // const result = await collection.insertOne(req.params);
 
-//   const newItem = req.body;
-//   await collection.insertOne(newItem);
-//   res.status(201).json(newItem);
-// });
+    console.log(result);
+    res.json(result);
+  } catch (err) {
+    //The default error handler
+    console.error("Error retrieving data:", err);
+
+    res.status(500).json({ error: "An error occurred while retrieving data." });
+  } finally {
+    await client.close();
+  }
+});
+
+app.post("/teacherclasses/booked", async (req, res) => {
+  const client = new MongoClient(uri);
+
+  try {
+    await client.connect();
+    const database = client.db("bookingApp");
+    // const collection = database.collection("student");
+
+    const collection = database.collection("teacher");
+    // const result = await collection.find({}).toArray();
+    const result = await collection.insertOne(req.body);
+
+    console.log(result);
+    res.json(result);
+  } catch (err) {
+    //The default error handler
+    console.error("Error retrieving data:", err);
+
+    res.status(500).json({ error: "An error occurred while retrieving data." });
+  } finally {
+    await client.close();
+  }
+});
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h2>Items</h2>
-    <MyItem v-for="item in myItems" :key="item._id" :item="item" />
+    <h1>Classes Available</h1>
+    <MyClassesDisplay v-for="item in myClasses" :key="item._id" :item="item" />
     <!-- // Aqui eu estou passando o item para o componente MyItem.vue -->
   </div>
 </template>
@@ -9,23 +9,23 @@
 <script>
 // import { ref, onMounted } from "vue"; // Importo o ref e o onMounted para usar com o Composition API
 import { useItemsStore } from "@/store/index.js"; // Importo o store (nome do store) que preciso usar nesse view
-import MyItem from "@/components/MyItem.vue";
+import MyClassesDisplay from "@/components/MyClassesDisplay.vue";
 
 // Options API aqui você usa as opções diretamente no objeto exportado. Cada opção tem seu próprio contexto e é definida no início do componente.
 export default {
   components: {
-    MyItem,
+    MyClassesDisplay,
   },
   data() {
     return {
-      myItems: [],
+      myClasses: [],
     };
   },
   async created() {
     // Lifecycle hook that's executed when the component is created
     try {
       const store = useItemsStore(); // declaro a variavel para store e defino ela com a store que estou "chamando";
-      this.myItems = await store.fetchItems(); // Vou fazer o fecth dos items que estão na mongodb q vem atraves da store que quero e vou atribuir a variavel myItems q recebe como um empty array
+      this.myClasses = await store.fetchItems(); // Vou fazer o fecth dos items que estão na mongodb q vem atraves da store que quero e vou atribuir a variavel myItems q recebe como um empty array
     } catch (error) {
       console.error(error);
     }
