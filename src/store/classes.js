@@ -2,16 +2,12 @@ import { defineStore } from "pinia";
 
 export const useClassesStore = defineStore("classes", {
   state: () => ({
-    services: [],
-    classes: [],
+    availableClasses: [],
   }),
 
   actions: {
-    createServices(service) {
-      this.services.push(service);
-    },
-    createClasses(aula) {
-      this.classes.push(aula);
+    setAvClasses(classes) {
+      this.availableClasses = classes;
     },
   },
   //ps:class cannot be used as a variable name

@@ -30,20 +30,7 @@ nav {
   }
 }
 
-// .titulo {
-//   font-size: 2em;
-//   margin: 20px;
-//   padding: 20px;
-//   border: 3px solid lightblue;
-// }
-
-form {
-  display: flex;
-  flex-direction: column;
-  width: 400px;
-  margin: auto;
-}
-.classesDisplay {
+.titulo {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-gap: 20px;
@@ -53,6 +40,16 @@ form {
   box-sizing: border-box;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+  margin: auto;
+}
+.classesDisplay {
+  border: 3px solid #8ee1b7;
 }
 
 .titulo {

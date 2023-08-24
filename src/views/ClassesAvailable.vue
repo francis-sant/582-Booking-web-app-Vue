@@ -1,20 +1,18 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
-  </div>
   <div>
-    {{ availableClasses }}
+    <h1>Classes Available</h1>
+    <!-- <MyClassesDisplay /> -->
   </div>
-  <StudentBooking />
 </template>
 
 <script>
-import StudentBooking from "@/components/StudentBooking.vue";
+// import MyClassesDisplay from "@/components/MyClassesDisplay.vue";
+import { useClassesStore } from "@/store/classes.js";
 
 export default {
-  name: "AboutView",
+  name: "ClassesAvailable",
   components: {
-    StudentBooking,
+    // MyClassesDisplay,
   },
   setup() {},
   data() {
@@ -30,9 +28,8 @@ export default {
       .then((response) => response.json())
       .then((json) => {
         console.log(json);
-        for (let user of json) {
-          this.availableClasses.push(user.days);
-        }
+        const classesStore = useClassesStore();
+        classesStore.setAvClasses(json);
       });
   },
 };

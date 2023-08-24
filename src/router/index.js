@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import MyItems from "../views/MyItems.vue";
+import ClassesAvailable from "../views/ClassesAvailable.vue";
 import TeacherClasses from "../views/TeacherClasses.vue";
 
 const routes = [
@@ -12,7 +12,7 @@ const routes = [
   {
     path: "/classes",
     name: "classes",
-    component: MyItems,
+    component: ClassesAvailable,
   },
   {
     path: "/teacherclasses",
@@ -20,7 +20,7 @@ const routes = [
     component: TeacherClasses,
     children: [
       {
-        path: "/teacherclasses/booked",
+        path: "/services/teacher",
         name: "teacherclasses",
         component: TeacherClasses,
       },
