@@ -14,6 +14,18 @@ const routes = [
     path: "/classes",
     name: "classes",
     component: ClassesAvailable,
+    children: [
+      {
+        path: "/classes/booking",
+        name: "classes",
+        component: ClassesAvailable,
+      },
+      {
+        path: "/classes/booking/bookedclasses",
+        name: "classes",
+        component: ClassesAvailable,
+      },
+    ],
   },
   {
     path: "/teacherclasses",
@@ -32,13 +44,7 @@ const routes = [
     path: "/about",
     name: "about",
     component: AboutViewVue,
-    children: [
-      {
-        path: "/student/booking",
-        name: "studentbooking",
-        component: AboutViewVue,
-      },
-    ],
+
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.

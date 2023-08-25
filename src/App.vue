@@ -2,7 +2,7 @@
   <nav>
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link> |
-    <router-link to="/classes">Items</router-link> |
+    <router-link to="/classes">Book My Class</router-link> |
     <router-link to="/teacherclasses">Teacher Classes</router-link> |
   </nav>
   <router-view />
@@ -14,18 +14,13 @@ import { useClassesStore } from "@/store/classes.js";
 export default {
   name: "App",
 
-  data() {
-    return {};
-  },
-  methods: {},
   created() {
-    // this.availableClasses = [];
     fetch("http://localhost:3000/classes")
       .then((response) => response.json())
       .then((classes) => {
         console.log(classes);
         const classesStore = useClassesStore();
-        classesStore.setAvClasses(classes);
+        classesStore.setAvClasses(classes); // Set the data after fetching
       });
   },
 };
@@ -75,6 +70,13 @@ form {
   border: 3px solid #8ee1b7;
 }
 
+#validationmsg {
+  color: red;
+  font-size: 12px;
+  margin: 0;
+  padding: 0;
+  margin-bottom: 10px;
+}
 .titulo {
   font-size: 18px;
   margin: auto;
