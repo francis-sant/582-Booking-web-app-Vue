@@ -9,7 +9,8 @@ const app = express();
 const port = 3000;
 
 // MongoDB connection URI
-const uri = "";
+const uri =
+  "String";
 
 //it will parse the income request body into json for all requests
 app.use(bodyParser.json());
@@ -17,15 +18,6 @@ app.use(bodyParser.json());
 //use this when i install cors npm install cors --save
 var cors = require("cors");
 app.use(cors());
-
-//CORS, or Cross Origin Resource Sharing, is a mechanism for browsers to let a site running at origin A to request resources from origin B.
-// preciso definir o dominio para permitir meu app vue aqui, por exemplo, tenho o mongodb rodando na porta 3000 e o vue na 8080, preciso definir o dominio para permitir o acesso
-// app.use((req, res, next) => {
-//   res.setHeader("Access-Control-Allow-Origin", "http://localhost:8080");
-//   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-//   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-//   next();
-// });
 
 //Read route-get request for the route
 app.get("/classes", async (req, res) => {
@@ -104,6 +96,31 @@ app.post("/services/teacher", async (req, res) => {
     // const collection = database.collection("student");
 
     const collection = database.collection("services");
+    // const result = await collection.find({}).toArray();
+    const result = await collection.insertOne(req.body);
+
+    console.log(result);
+    res.json(result);
+    // res.write("Data inserted successfully.");
+  } catch (err) {
+    //The default error handler
+    console.error("Error retrieving data:", err);
+
+    res.status(500).json({ error: "An error occurred while retrieving data." });
+  } finally {
+    await client.close();
+  }
+});
+
+app.post("/student/booking", async (req, res) => {
+  const client = new MongoClient(uri);
+
+  try {
+    await client.connect();
+    const database = client.db("bookingApp");
+    // const collection = database.collection("student");
+
+    const collection = database.collection("students");
     // const result = await collection.find({}).toArray();
     const result = await collection.insertOne(req.body);
 

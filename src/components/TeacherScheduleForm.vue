@@ -12,53 +12,41 @@
     <label for="type">Modality: Online, Class</label>
     <input type="text" v-model="modality" required />
 
-    <label for="month">Month:</label>
-    <select v-model="month" required>
-      <option value="01">Janeiro</option>
-      <option value="02">Fevereiro</option>
-      <option value="03">Março</option>
-      <option value="04">Abril</option>
-      <option value="05">Maio</option>
-      <option value="06">Junho</option>
-      <option value="07">Julho</option>
-      <option value="08">Agosto</option>
-      <option value="09">Setembro</option>
-      <option value="10">Outubro</option>
-      <option value="11">Novembro</option>
-      <option value="12">Dezembro</option>
-    </select>
+    <div class="months" for="months">
+      <h2>Months:</h2>
+      <label v-for="(monthLabel, monthValue) in months" :key="monthValue">
+        <input type="checkbox" :value="monthLabel" v-model="selectedMonths" />
+        {{ monthLabel }}
+      </label>
+    </div>
 
     <label for="frequency">Frequency:</label>
     <select v-model="selectedFrequency" id="frequency">
       <option value="once">Once</option>
       <option value="twice">Twice</option>
+      <option value="daily">Daily</option>
     </select>
 
-    <label v-if="selectedFrequency === 'once'" for="dayOfWeek">
-      Dia da semana (selecione um):
-    </label>
-    <div v-if="selectedFrequency === 'once'">
-      <select v-model="selectedDay" id="dayOfWeek">
-        <option v-for="(day, index) in daysOfWeek" :key="index" :value="day">
-          {{ day }}
-        </option>
-      </select>
-    </div>
-    <!-- essa ocpção de selecionar apenas 2 dias é para o aluno -->
-    <label v-if="selectedFrequency === 'twice'" for="dayOfWeek">
-      Dias da semana (selecione dois):
-    </label>
-    <div v-if="selectedFrequency === 'twice'">
-      <label v-for="(day, index) in daysOfWeek" :key="index">
-        <input
-          type="checkbox"
-          :value="day"
-          v-model="selectedDays"
-          :disabled="selectedDays.length >= 2 && !selectedDays.includes(day)"
-        />
+    <div
+      v-if="selectedFrequency === 'once' || selectedFrequency === 'twice'"
+      for="dayOfWeek"
+    >
+      <label>Dia da semana:</label>
+      <label v-for="(day, index) in daysOfWeek" :key="index" value="day">
+        <input type="checkbox" :value="day" v-model="selectedDays" />
         {{ day }}
       </label>
     </div>
+    <div v-if="selectedFrequency === 'daily'" for="dayOfWeek">
+      <label>Dia da semana:</label>
+      <label v-for="(day, index) in daysOfWeek" :key="index" value="day">
+        <input type="checkbox" :value="day" v-model="selectedDays" />
+        {{ day }}
+      </label>
+    </div>
+
+    <label for="type">Duration - in minutes</label>
+    <input type="text" v-model="duration" required />
 
     <label for="time">Available Time:</label>
     <input type="time" v-model="startTime" required /> até
@@ -96,15 +84,15 @@ export default {
     const name = ref("");
     const type = ref("");
     const modality = ref("");
-    const month = ref("");
     const selectedFrequency = ref("");
     const selectedDays = ref([]);
-    const selectedDay = ref("");
     const startTime = ref("");
     const endTime = ref("");
     const price = ref("");
     const successMessage = ref("");
     const failMessage = ref("");
+    const selectedMonths = ref([]);
+    const duration = ref("");
 
     const daysOfWeek = [
       "Sunday",
@@ -116,6 +104,21 @@ export default {
       "Saturday",
     ];
 
+    const months = {
+      "01": "Janeiro",
+      "02": "Fevereiro",
+      "03": "Março",
+      "04": "Abril",
+      "05": "Maio",
+      "06": "Junho",
+      "07": "Julho",
+      "08": "Agosto",
+      "09": "Setembro",
+      10: "Outubro",
+      11: "Novembro",
+      12: "Dezembro",
+    };
+
     // const teacherStore = useTeacherStore();
     const router = useRouter();
 
@@ -126,12 +129,12 @@ export default {
         name: name.value,
         modality: modality.value,
         frequency: selectedFrequency.value,
-        month: month.value,
+        months: selectedMonths.value,
         days: selectedDays.value,
-        day: selectedDay.value,
         startTime: startTime.value,
         endTime: endTime.value,
         price: price.value,
+        duration: duration.value,
       };
 
       try {
@@ -157,13 +160,14 @@ export default {
       name.value = "";
       type.value = "";
       modality.value = "";
-      month.value = "";
+      months.value = "";
+      selectedMonths.value = [];
       selectedFrequency.value = "";
-      selectedDay.value = "";
       startTime.value = "";
       endTime.value = "";
       price.value = "";
       selectedDays.value = [];
+      duration.value = "";
     };
 
     return {
@@ -171,9 +175,9 @@ export default {
       name,
       type,
       modality,
-      month,
+      months,
+      selectedMonths,
       selectedFrequency,
-      selectedDay,
       startTime,
       endTime,
       price,
@@ -183,6 +187,7 @@ export default {
       submitSchedule,
       successMessage,
       failMessage,
+      duration,
     };
   },
 };

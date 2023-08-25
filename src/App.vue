@@ -8,6 +8,29 @@
   <router-view />
 </template>
 
+<script>
+import { useClassesStore } from "@/store/classes.js";
+
+export default {
+  name: "App",
+
+  data() {
+    return {};
+  },
+  methods: {},
+  created() {
+    // this.availableClasses = [];
+    fetch("http://localhost:3000/classes")
+      .then((response) => response.json())
+      .then((classes) => {
+        console.log(classes);
+        const classesStore = useClassesStore();
+        classesStore.setAvClasses(classes);
+      });
+  },
+};
+</script>
+
 <style lang="scss">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

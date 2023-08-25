@@ -4,7 +4,9 @@ export const useClassesStore = defineStore("classes", {
   state: () => ({
     availableClasses: [],
   }),
-
+  getters: {
+    getAvClasses: (state) => state.availableClasses,
+  },
   actions: {
     setAvClasses(classes) {
       this.availableClasses = classes;

@@ -2,19 +2,17 @@
   <div class="about">
     <h1>This is an about page</h1>
   </div>
-  <div>
-    {{ availableClasses }}
-  </div>
-  <StudentBooking />
+  <div></div>
+  <!-- <StudentBooking /> -->
 </template>
 
 <script>
-import StudentBooking from "@/components/StudentBooking.vue";
+// import StudentBooking from "@/components/StudentBooking.vue";
 
 export default {
   name: "AboutView",
   components: {
-    StudentBooking,
+    // StudentBooking,
   },
   setup() {},
   data() {
@@ -26,12 +24,13 @@ export default {
     custom() {},
   },
   created() {
+    this.availableClasses = [];
     fetch("http://localhost:3000/classes")
       .then((response) => response.json())
       .then((json) => {
         console.log(json);
-        for (let user of json) {
-          this.availableClasses.push(user.days);
+        for (let classes of json) {
+          this.availableClasses.push(classes);
         }
       });
   },
