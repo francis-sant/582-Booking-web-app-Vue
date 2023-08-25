@@ -10,38 +10,13 @@ const port = 3000;
 
 // MongoDB connection URI
 const uri =
-  "String";
-
+string
 //it will parse the income request body into json for all requests
 app.use(bodyParser.json());
 
 //use this when i install cors npm install cors --save
 var cors = require("cors");
 app.use(cors());
-
-//Read route-get request for the route
-app.get("/classes", async (req, res) => {
-  const client = new MongoClient(uri);
-
-  try {
-    await client.connect();
-    const database = client.db("bookingApp");
-    // const collection = database.collection("student");
-    const collection = database.collection("services");
-    const result = await collection.find({}).toArray();
-    // const result = await collection.deleteMany(req.params);
-
-    console.log(result);
-    res.json(result);
-  } catch (err) {
-    //The default error handler
-    console.error("Error retrieving data:", err);
-
-    res.status(500).json({ error: "An error occurred while retrieving data." });
-  } finally {
-    await client.close();
-  }
-});
 
 app.post("/", async (req, res) => {
   const client = new MongoClient(uri);
@@ -112,7 +87,31 @@ app.post("/services/teacher", async (req, res) => {
   }
 });
 
-app.post("/student/booking", async (req, res) => {
+//Read route-get request for the route
+app.get("/classes", async (req, res) => {
+  const client = new MongoClient(uri);
+
+  try {
+    await client.connect();
+    const database = client.db("bookingApp");
+    // const collection = database.collection("student");
+    const collection = database.collection("services");
+    const result = await collection.find({}).toArray();
+    // const result = await collection.deleteMany(req.params);
+
+    console.log(result);
+    res.json(result);
+  } catch (err) {
+    //The default error handler
+    console.error("Error retrieving data:", err);
+
+    res.status(500).json({ error: "An error occurred while retrieving data." });
+  } finally {
+    await client.close();
+  }
+});
+
+app.post("/classes/booking", async (req, res) => {
   const client = new MongoClient(uri);
 
   try {
@@ -120,13 +119,36 @@ app.post("/student/booking", async (req, res) => {
     const database = client.db("bookingApp");
     // const collection = database.collection("student");
 
-    const collection = database.collection("students");
+    const collection = database.collection("bookedClasses");
     // const result = await collection.find({}).toArray();
     const result = await collection.insertOne(req.body);
 
     console.log(result);
     res.json(result);
-    res.write("Data inserted successfully.");
+  } catch (err) {
+    //The default error handler
+    console.error("Error retrieving data:", err);
+
+    res.status(500).json({ error: "An error occurred while retrieving data." });
+  } finally {
+    await client.close();
+  }
+});
+
+app.get("/classes/booking/bookedclasses", async (req, res) => {
+  const client = new MongoClient(uri);
+
+  try {
+    await client.connect();
+    const database = client.db("bookingApp");
+    // const collection = database.collection("student");
+
+    const collection = database.collection("bookedClasses");
+    const result = await collection.find({}).toArray();
+    // const result = await collection.insertOne(req.params);
+
+    console.log(result);
+    res.json(result);
   } catch (err) {
     //The default error handler
     console.error("Error retrieving data:", err);
