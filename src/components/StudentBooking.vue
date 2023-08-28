@@ -1,108 +1,69 @@
 <template>
   <div>
     <h2>My Classes</h2>
-    <label for="class">Choose a Class:</label>
-    <select id="class" v-model="selectedClass">
-      <option
-        v-for="classItem in availableClasses"
-        :key="classItem._id"
-        :value="classItem"
-      >
-        {{ classItem.name }}
-      </option>
-    </select>
-    <!-- using two way binding im binding the availableclasses data from pinia to selectedClass and passing along to new variables to save them as a new form for the studentclasses booked -->
-    <label for="time">Choose a Time:</label>
-    <select id="time" v-model="selectedTime">
-      <option v-for="time in availableTimes" :key="time">{{ time }}</option>
-    </select>
-
-    <div v-if="selectedClass">
-      <div v-if="selectedClass.frequency === 'once'">
-        <label for="selectedDays"> Dia da semana: </label>
-        <div v-if="selectedClass.frequency === 'once'">
-          <label v-for="(day, index) in availableDays" :key="index" required>
-            <input
-              id="selectedDays"
-              type="checkbox"
-              :value="day"
-              v-model="selectedDays"
-              :disabled="
-                selectedDays.length >= 1 && !selectedDays.includes(day)
-              "
-            />
-            {{ day }}
-          </label>
-        </div>
-      </div>
-
-      <div v-else-if="selectedClass.frequency === 'twice'">
-        <label for="selectedDays">Choose Two Days:</label>
-        <div>
-          <label v-for="(day, index) in availableDays" :key="index">
-            <input
-              id="selectedDays"
-              type="checkbox"
-              :value="day"
-              v-model="selectedDays"
-              :disabled="
-                selectedDays.length >= 2 && !selectedDays.includes(day)
-              "
-            />
-            {{ day }}
-          </label>
-        </div>
-      </div>
-      <label for="selectedMonth">Choose a Month:</label>
-      <select id="selectedMonth" v-model="selectedMonth" required>
-        <option v-for="month in selectedClass.months" :key="month">
-          {{ month }}
+    <div class="myclasses">
+      <label for="class">Choose a Class:</label>
+      <select id="class" v-model="selectedClass">
+        <option
+          v-for="classItem in availableClasses"
+          :key="classItem._id"
+          :value="classItem"
+        >
+          {{ classItem.name }}
+        </option>
+      </select>
+      <label for="date">Choose a Date:</label>
+      <select id="date" v-model="selectedDate">
+        <option
+          v-for="(time, index) in availableDate"
+          :key="index"
+          :value="time"
+        >
+          {{ time }}
         </option>
       </select>
 
+      <label for="time">Choose a Time:</label>
+      <select id="time" v-model="selectedTime">
+        <option
+          v-for="(time, index) in availableTime"
+          :key="index"
+          :value="time"
+          :disabled="isAlreadyBooked"
+        >
+          {{ time }}
+        </option>
+      </select>
+    </div>
+    <div v-if="validationMessage" id="validationmsg">
+      {{ validationMessage }}
+    </div>
+
+    <div class="classInfo" v-if="selectedClass">
+      <p>Instructor: {{ selectedClass.instructor }}</p>
       <p>Type: {{ selectedClass.type }}</p>
-      <p>Frequency: {{ selectedClass.frequency }}</p>
       <p>Modality: {{ selectedClass.modality }}</p>
       <p>Duration: {{ selectedClass.duration }} minutes</p>
       <p>Price: $ {{ selectedClass.price }}</p>
     </div>
 
-    <div v-if="validationMessage" id="validationmsg">
-      {{ validationMessage }}
-    </div>
+    <PersonalInfo
+      :student-info="studentInfo"
+      @booking-confirmed="sendBooking"
+    />
 
-    <div class="personalinfo">
-      <h2>Personal Information</h2>
-      <label for="firstName">First Name:</label>
-      <input id="firstName" v-model="firstName" required />
+    <div class="classbooked" v-if="bookingConfirmed">
+      <h2>Class Booked</h2>
+      <p>
+        Student Name: {{ bookingDetails.firstName }}
+        {{ bookingDetails.lastName }}
+      </p>
 
-      <label for="lastName">Last Name:</label>
-      <input id="lastName" v-model="lastName" required />
-
-      <label for="phone">Phone:</label>
-      <input id="phone" v-model="phone" required />
-
-      <label for="email">Email:</label>
-      <input id="email" v-model="email" required />
-    </div>
-
-    <button @click="confirmBooking" :disabled="isFormInvalid">
-      Confirm Booking
-    </button>
-
-    <div v-if="bookingConfirmed">
-      <h2>Confirmation</h2>
-      <p>Name: {{ firstName }} {{ lastName }}</p>
-      <p>Phone: {{ phone }}</p>
-      <p>Email: {{ email }}</p>
-      <p>Class: {{ selectedClass.name }}</p>
-      <p>Type: {{ selectedClass.type }}</p>
-      <p>Time: {{ selectedTime }}</p>
-      <p>Duration: {{ selectedClass.duration }}</p>
-    </div>
-
-    <div v-else>
-      <p>No New Classes Booked Yet!</p>
+      <p>Class Name: {{ bookingDetails.className }}</p>
+      <p>Class Type: {{ bookingDetails.classType }}</p>
+      <p>Duration: {{ bookingDetails.duration }} minutes</p>
+      <p>Date: {{ bookingDetails.selectedDate }}</p>
+      <p>Time: {{ bookingDetails.selectedTime }}</p>
     </div>
   </div>
 </template>
@@ -111,42 +72,85 @@
 import { useClassesStore } from "@/store/classes.js";
 import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import PersonalInfo from "./PersonalInfo.vue";
 
 export default {
   name: "StudentBooking",
-  computed: {
-    selectedDaysCount() {
-      return this.selectedDays.length;
-    },
+  components: {
+    PersonalInfo,
   },
   setup() {
     const classesStore = useClassesStore();
     const availableClasses = computed(() => classesStore.getAvClasses);
     const selectedClass = ref(null);
-    const selectedTime = ref(null);
+    const selectedDate = ref(null);
     const firstName = ref("");
     const lastName = ref("");
     const phone = ref("");
     const email = ref("");
     const bookingConfirmed = ref(false);
-    const selectedMonth = ref("");
-    const selectedDays = ref([]);
     const validationMessage = ref("");
-
-    //now i need to send and take booked classes from the store to check new availtime slots
-    const bookedClasses = ref([]);
-
-    const availableDays = [
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-      "Sunday",
-    ];
+    const bookingDetails = ref(null);
+    const selectedTime = ref(null);
+    const studentInfo = ref({
+      firstName: "",
+      lastName: "",
+      phone: "",
+      email: "",
+    });
 
     const router = useRouter();
+
+    const availableDate = computed(() => {
+      if (!selectedClass.value) {
+        return ["No Class Yet"];
+      }
+      // Get the selected class's dateTimes array
+      const classDateTimes = selectedClass.value.dateTimes;
+
+      // Extract the dates from the classDateTimes array
+      const dates = classDateTimes.map((dateTime) => dateTime.date);
+
+      return dates;
+    });
+
+    const availableTime = computed(() => {
+      if (!selectedClass.value || !selectedDate.value) {
+        return ["Select a Class first"];
+      } else {
+        const selectedDateValue = selectedDate.value;
+        const dateTimes = selectedClass.value.dateTimes;
+
+        let selectedDateTime = null;
+        for (let i = 0; i < dateTimes.length; i++) {
+          if (dateTimes[i].date === selectedDateValue) {
+            selectedDateTime = dateTimes[i];
+            let startTime = selectedDateTime.startTime;
+            let endTime = selectedDateTime.endTime;
+
+            const availableHours = [];
+            const startHour = parseInt(startTime.split(":")[0]);
+            const endHour = parseInt(endTime.split(":")[0]);
+
+            for (let hour = startHour; hour <= endHour; hour++) {
+              availableHours.push(`${hour}:00`);
+            }
+
+            return availableHours;
+          }
+        }
+
+        if (selectedDateTime) {
+          return [selectedDateTime.startTime, selectedDateTime.endTime];
+        } else {
+          return ["No Available Times for Selected Date"];
+        }
+      }
+    });
+
+    //now i need to send and take booked classes from the store to check new availtime slots
+
+    // const router = useRouter();
 
     const fetchBookedClasses = async () => {
       try {
@@ -155,14 +159,21 @@ export default {
         );
         if (response.ok) {
           const bookedClass = await response.json();
-          bookedClasses.value = bookedClass; // Store fetched booked classes
+          // bookedClasses.value = bookedClass; // Store fetched booked classes
           const classesStore = useClassesStore();
           classesStore.addBookedClass(bookedClass);
-          const bookedTimeSlots = bookedClass.map((bookedClass) => {
-            return bookedClass.time;
-          });
-          classesStore.setBookedTimeSlots(bookedTimeSlots);
 
+          const bookedClassDetails = bookedClass.map((bookedClass) => {
+            return {
+              firstName: bookedClass.firstName,
+              email: bookedClass.email,
+              selectedTime: bookedClass.selectedTime,
+              selectedDays: bookedClass.selectedDays,
+              selectedClass: bookedClass.class.name,
+              duration: bookedClass.class.duration,
+            };
+          });
+          classesStore.setBookedTimeSlots(bookedClassDetails);
         } else {
           console.error("Failed to fetch booked classes:", response.statusText);
         }
@@ -174,176 +185,107 @@ export default {
     onMounted(async () => {
       // choosing a default to be already available in the menu offer
       selectedClass.value = availableClasses.value[0];
-
       fetchBookedClasses();
     });
 
-    const availableTimes = computed(() => {
-      if (!selectedClass.value) {
-        return [];
-      }
+    const isAlreadyBooked = computed(() => {
+      const selectedClassName = selectedClass.value?.name; // Safely access the property
+      const selectedDateValue = selectedDate.value;
+      const selectedTimeValue = selectedTime.value;
 
-      const { startTime, endTime } = selectedClass.value;
-      const [startHour, startMinute] = startTime.split(":").map(Number);
-      const [endHour, endMinute] = endTime.split(":").map(Number);
+      const classesStore = useClassesStore();
 
-      const times = [];
+      const bookedClasses = classesStore.getBookedClasses;
 
-      for (let hour = startHour; hour <= endHour; hour++) {
-        for (let minute = 0; minute <= 59; minute++) {
-          if (
-            (hour === startHour && minute >= startMinute) ||
-            (hour === endHour && minute <= endMinute) ||
-            (hour !== startHour && hour !== endHour)
-          ) {
-            times.push(formatHourMinute(hour, minute));
-          }
-        }
-      }
-
-      return times;
+      console.log("Booked classes:", bookedClasses);
+      return bookedClasses.some((booking) => {
+        return (
+          booking.selectedClass === selectedClassName &&
+          booking.selectedDate === selectedDateValue &&
+          booking.selectedTime === selectedTimeValue
+        );
+      });
     });
 
-    const formatHourMinute = (hour, minute) => {
-      const period = hour >= 12 ? "pm" : "am";
-      const formattedHour = hour > 12 ? hour - 12 : hour;
-      const formattedMinute = String(minute).padStart(2, "0");
-      return `${formattedHour}:${formattedMinute}${period}`;
-    };
+    // const validateForm = () => {
+    //   // Validation logic
+    //   // ...
+    // };
 
     // const isFormInvalid = computed(() => {
-    //   console.log("isFormInvalid being entered");
-
-    //   return (
-    //     !selectedClass.value ||
-    //     !selectedTime.value ||
-    //     !selectedDays.value ||
-    //     !firstName.value ||
-    //     !lastName.value ||
-    //     !phone.value ||
-    //     !email.value
-    //   );
+    //   return validateForm();
     // });
 
-    const validateForm = () => {
-      validationMessage.value = "";
-      if (selectedClass.value && selectedTime.value) {
-        if (
-          selectedClass.value.frequency === "once" &&
-          selectedDays.value.length === 0
-        ) {
-          validationMessage.value = "Please select One day of the week.";
-          return true;
-        } else if (
-          selectedClass.value.frequency === "twice" &&
-          selectedDays.value.length !== 2
-        ) {
-          validationMessage.value = "Please select Two days of the week.";
-          return true;
-        } else {
-          return (
-            !selectedClass.value ||
-            !selectedTime.value ||
-            !selectedDays.value ||
-            !firstName.value ||
-            !lastName.value ||
-            !phone.value ||
-            !email.value
-          );
-        }
-      }
-      validationMessage.value = "Don't forget to select a class and time.";
-      return (
-        !selectedClass.value ||
-        !selectedTime.value ||
-        !selectedDays.value ||
-        !firstName.value ||
-        !lastName.value ||
-        !phone.value ||
-        !email.value
-      );
-    };
+    // const confirmBooking = async () => {
+    //   // Confirm booking logic
+    //   // ...
+    // };
 
-    const isFormInvalid = computed(() => {
-      console.log("Form checking is being accessed.");
-      return validateForm();
-    });
+    // const isFormInvalid = computed(() => {
+    //   console.log("Form checking is being accessed.");
+    //   return validateForm();
+    // });
 
-    const confirmBooking = async () => {
-      if (
-        selectedClass.value &&
-        selectedTime.value &&
-        firstName.value &&
-        lastName.value &&
-        phone.value &&
-        email.value
-      ) {
-        const bookingDetails = {
-          class: {
-            instructor: selectedClass.value.instructor,
-            name: selectedClass.value.name,
-            type: selectedClass.value.type,
-            modality: selectedClass.value.modality,
-            frequency: selectedClass.value.frequency,
-            price: selectedClass.value.price,
-            duration: selectedClass.value.duration,
+    const sendBooking = async (studentInfo) => {
+      // Handle the booking details emitted from the child component
+
+      const classDetails = {
+        className: selectedClass.value.name,
+        classType: selectedClass.value.type,
+        duration: selectedClass.value.duration,
+        selectedDate: selectedDate.value,
+        selectedTime: selectedTime.value,
+        instructor: selectedClass.value.instructor,
+      };
+
+      // Combine personalInfo and classDetails into a single object
+      const combinedBookingDetails = {
+        ...studentInfo,
+        ...classDetails,
+      };
+      console.log("Booking details:", classDetails, studentInfo);
+
+      // Save the booking details to a collection or store as needed
+      try {
+        const response = await fetch("http://localhost:3000/classes/booking", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
           },
-          time: selectedTime.value,
-          firstName: firstName.value,
-          lastName: lastName.value,
-          phone: phone.value,
-          email: email.value,
-        };
+          body: JSON.stringify(combinedBookingDetails),
+        });
 
-        if (
-          selectedClass.value.frequency === "once" ||
-          selectedClass.value.frequency === "twice"
-        ) {
-          bookingDetails.selectedDays = selectedDays.value;
-          bookingDetails.selectedMonth = selectedMonth.value;
+        if (response.ok) {
+          bookingConfirmed.value = true; // Update bookingConfirmed here if needed
+          bookingDetails.value = combinedBookingDetails;
+
+          router.push("/classes");
+          // Update studentInfo with the confirmed booking student information
+        } else {
+          console.error("Booking request failed:", response.statusText);
         }
-
-        try {
-          const response = await fetch(
-            "http://localhost:3000/classes/booking",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(bookingDetails),
-            }
-          );
-
-          if (response.ok) {
-            bookingConfirmed.value = true;
-            router.push("/classes/booking");
-          } else {
-            console.error("Booking request failed:", response.statusText);
-          }
-        } catch (error) {
-          console.error("Booking request error:", error);
-        }
+      } catch (error) {
+        console.error("Booking request error:", error);
       }
     };
 
     return {
       availableClasses,
       selectedClass,
-      selectedTime,
+      selectedDate,
       firstName,
       lastName,
-      isFormInvalid,
       phone,
       email,
       bookingConfirmed,
-      availableTimes,
-      confirmBooking,
-      availableDays,
-      selectedMonth,
-      selectedDays,
+      bookingDetails,
       validationMessage,
-      bookedClasses,
+      selectedTime,
+      availableDate,
+      availableTime,
+      studentInfo,
+      sendBooking,
+      isAlreadyBooked,
     };
   },
 };

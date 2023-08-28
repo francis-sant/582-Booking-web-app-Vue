@@ -96,4 +96,18 @@ form {
     margin: 0;
   }
 }
+
+.myclasses {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  margin: auto;
+}
+
+.personalinfo {
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+  margin: auto;
+}
 </style>

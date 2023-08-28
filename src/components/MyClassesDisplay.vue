@@ -7,16 +7,11 @@
         <p>Nome do Tipo de Aula: {{ item.name }}</p>
         <p>Modality: {{ item.modality }}</p>
         <p>Duration: {{ item.duration }} minutes</p>
-        <p>Month:</p>
+
+        <p>Data e Hora</p>
         <ul>
-          <li v-for="(month, index) in item.months" :key="index">
-            {{ month }}
-          </li>
-        </ul>
-        <p>Dias da Semana:</p>
-        <ul>
-          <li v-for="(day, index) in item.days" :key="index">
-            {{ day }}
+          <li v-for="(day, index) in item.dateTimes" :key="index">
+            {{ day.date }} - {{ day.startTime }} até {{ day.endTime }}
           </li>
         </ul>
 
