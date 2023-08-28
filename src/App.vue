@@ -70,9 +70,9 @@ form {
   border: 3px solid #8ee1b7;
 }
 
-#validationmsg {
+.validationMessage {
   color: red;
-  font-size: 12px;
+  font-size: 20px;
   margin: 0;
   padding: 0;
   margin-bottom: 10px;

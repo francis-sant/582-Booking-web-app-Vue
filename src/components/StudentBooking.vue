@@ -3,7 +3,7 @@
     <h2>My Classes</h2>
     <div class="myclasses">
       <label for="class">Choose a Class:</label>
-      <select id="class" v-model="selectedClass">
+      <select id="class" v-model="selectedClass" @change="handleDropdownChange">
         <option
           v-for="classItem in availableClasses"
           :key="classItem._id"
@@ -13,7 +13,7 @@
         </option>
       </select>
       <label for="date">Choose a Date:</label>
-      <select id="date" v-model="selectedDate">
+      <select id="date" v-model="selectedDate" @change="handleDropdownChange">
         <option
           v-for="(time, index) in availableDate"
           :key="index"
@@ -24,18 +24,19 @@
       </select>
 
       <label for="time">Choose a Time:</label>
-      <select id="time" v-model="selectedTime">
+      <select id="time" v-model="selectedTime" @change="handleDropdownChange">
         <option
           v-for="(time, index) in availableTime"
           :key="index"
           :value="time"
-          :disabled="isAlreadyBooked"
+          :disabled="isAlreadyBooked && time === selectedTime"
         >
           {{ time }}
         </option>
       </select>
     </div>
-    <div v-if="validationMessage" id="validationmsg">
+
+    <div class="validationMessage">
       {{ validationMessage }}
     </div>
 
@@ -49,6 +50,7 @@
 
     <PersonalInfo
       :student-info="studentInfo"
+      :isFormInvalid="isAlreadyBooked"
       @booking-confirmed="sendBooking"
     />
 
@@ -92,6 +94,7 @@ export default {
     const validationMessage = ref("");
     const bookingDetails = ref(null);
     const selectedTime = ref(null);
+    const isAlreadyBooked = ref(false);
     const studentInfo = ref({
       firstName: "",
       lastName: "",
@@ -103,7 +106,7 @@ export default {
 
     const availableDate = computed(() => {
       if (!selectedClass.value) {
-        return ["No Class Yet"];
+        return ["Please Select One Class First"];
       }
       // Get the selected class's dateTimes array
       const classDateTimes = selectedClass.value.dateTimes;
@@ -116,7 +119,7 @@ export default {
 
     const availableTime = computed(() => {
       if (!selectedClass.value || !selectedDate.value) {
-        return ["Select a Class first"];
+        return ["Select One Date First"];
       } else {
         const selectedDateValue = selectedDate.value;
         const dateTimes = selectedClass.value.dateTimes;
@@ -162,18 +165,6 @@ export default {
           // bookedClasses.value = bookedClass; // Store fetched booked classes
           const classesStore = useClassesStore();
           classesStore.addBookedClass(bookedClass);
-
-          const bookedClassDetails = bookedClass.map((bookedClass) => {
-            return {
-              firstName: bookedClass.firstName,
-              email: bookedClass.email,
-              selectedTime: bookedClass.selectedTime,
-              selectedDays: bookedClass.selectedDays,
-              selectedClass: bookedClass.class.name,
-              duration: bookedClass.class.duration,
-            };
-          });
-          classesStore.setBookedTimeSlots(bookedClassDetails);
         } else {
           console.error("Failed to fetch booked classes:", response.statusText);
         }
@@ -188,33 +179,61 @@ export default {
       fetchBookedClasses();
     });
 
-    const isAlreadyBooked = computed(() => {
-      const selectedClassName = selectedClass.value?.name; // Safely access the property
+    const handleDropdownChange = () => {
+      const bookingAvailability = checkBookingAvailability();
+      if (bookingAvailability.isAlreadyBooked) {
+        validationMessage.value = bookingAvailability.validationMessage;
+      } else {
+        validationMessage.value = ""; // Clear the validation message if not booked
+      }
+    };
+
+    const checkBookingAvailability = () => {
+      const selectedClassName = selectedClass.value.name;
       const selectedDateValue = selectedDate.value;
       const selectedTimeValue = selectedTime.value;
-
+      console.log("Selected Class:", selectedClassName);
       const classesStore = useClassesStore();
 
       const bookedClasses = classesStore.getBookedClasses;
 
-      console.log("Booked classes:", bookedClasses);
-      return bookedClasses.some((booking) => {
-        return (
-          booking.selectedClass === selectedClassName &&
-          booking.selectedDate === selectedDateValue &&
-          booking.selectedTime === selectedTimeValue
-        );
-      });
-    });
+      // console.log("Booked classes test:", bookedClasses[0]);
+
+      let newCheckingBooking = bookedClasses[0];
+
+      for (let item in newCheckingBooking) {
+        // console.log("Item:", newCheckingBooking[item].className);
+        if (
+          newCheckingBooking[item].className === selectedClassName &&
+          newCheckingBooking[item].selectedDate === selectedDateValue &&
+          newCheckingBooking[item].selectedTime === selectedTimeValue
+        ) {
+          console.log("Already booked");
+          validationMessage.value =
+            "There is no spot available at this time anymore, choose another time";
+          isAlreadyBooked.value = true;
+          console.log(isAlreadyBooked.value);
+          return {
+            isAlreadyBooked: true,
+            validationMessage: validationMessage.value,
+          };
+        }
+      }
+
+      // Reset the ref value when the condition is not met
+      isAlreadyBooked.value = false;
+      console.log(isAlreadyBooked.value);
+      return { isAlreadyBooked: false, validationMessage: null };
+    };
 
     // const validateForm = () => {
     //   // Validation logic
     //   // ...
     // };
 
-    // const isFormInvalid = computed(() => {
-    //   return validateForm();
-    // });
+    const isFormInvalid = computed(() => {
+      return isAlreadyBooked;
+    });
 
     // const confirmBooking = async () => {
     //   // Confirm booking logic
@@ -238,7 +257,7 @@ export default {
         instructor: selectedClass.value.instructor,
       };
 
-      // Combine personalInfo and classDetails into a single object
+      // Combining personalInfo and classDetails into a single object
       const combinedBookingDetails = {
         ...studentInfo,
         ...classDetails,
@@ -256,11 +275,10 @@ export default {
         });
 
         if (response.ok) {
-          bookingConfirmed.value = true; // Update bookingConfirmed here if needed
+          bookingConfirmed.value = true;
           bookingDetails.value = combinedBookingDetails;
 
           router.push("/classes");
-          // Update studentInfo with the confirmed booking student information
         } else {
           console.error("Booking request failed:", response.statusText);
         }
@@ -286,6 +304,9 @@ export default {
       studentInfo,
       sendBooking,
       isAlreadyBooked,
+      checkBookingAvailability,
+      handleDropdownChange,
+      isFormInvalid,
     };
   },
 };

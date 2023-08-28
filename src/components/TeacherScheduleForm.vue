@@ -66,9 +66,7 @@ export default {
     const failMessage = ref("");
     const duration = ref("");
 
-    const dateTimes = ref([
-      { date: "", startTime: "", endTime: "" },
-    ]);
+    const dateTimes = ref([{ date: "", startTime: "", endTime: "" }]);
 
     const addDateTime = () => {
       dateTimes.value.push({ date: "", startTime: "", endTime: "" });

@@ -15,7 +15,9 @@
       <input id="email" v-model="email" required />
     </div>
 
-    <button @click="confirmBooking">Confirm Booking</button>
+    <button @click="confirmBooking" :disabled="isFormInvalid">
+      Confirm Booking
+    </button>
 
     <!-- <div class="personalConfirmation">
       <h2>Confirmation</h2>
@@ -30,6 +32,7 @@
 export default {
   name: "PersonalInfo",
   props: {
+    isFormInvalid: Boolean,
     bookingConfirmed: Boolean,
     studentInfo: Object,
   },
