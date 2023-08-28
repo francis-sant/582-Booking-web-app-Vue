@@ -116,7 +116,41 @@ export default {
 
       return dates;
     });
+    // --------------------------------------------------------------------------------------------------------------------------------------------------------
+    // const availableTime = computed(() => {
+    //   if (!selectedClass.value || !selectedDate.value) {
+    //     return ["Select One Date First"];
+    //   } else {
+    //     const selectedDateValue = selectedDate.value;
+    //     const dateTimes = selectedClass.value.dateTimes;
 
+    //     let selectedDateTime = null;
+    //     for (let i = 0; i < dateTimes.length; i++) {
+    //       if (dateTimes[i].date === selectedDateValue) {
+    //         selectedDateTime = dateTimes[i];
+    //         let startTime = selectedDateTime.startTime;
+    //         let endTime = selectedDateTime.endTime;
+
+    //         const availableHours = [];
+    //         const startHour = parseInt(startTime.split(":")[0]);
+    //         const endHour = parseInt(endTime.split(":")[0]);
+
+    //         for (let hour = startHour; hour <= endHour; hour++) {
+    //           availableHours.push(`${hour}:00`);
+    //         }
+
+    //         return availableHours;
+    //       }
+    //     }
+
+    //     if (selectedDateTime) {
+    //       return [selectedDateTime.startTime, selectedDateTime.endTime];
+    //     } else {
+    //       return ["No Available Times for Selected Date"];
+    //     }
+    //   }
+    // });
+    // --------------------------------------------------------------------------------------------------------------------------------------------------------
     const availableTime = computed(() => {
       if (!selectedClass.value || !selectedDate.value) {
         return ["Select One Date First"];
@@ -132,11 +166,24 @@ export default {
             let endTime = selectedDateTime.endTime;
 
             const availableHours = [];
-            const startHour = parseInt(startTime.split(":")[0]);
-            const endHour = parseInt(endTime.split(":")[0]);
+            const classDurationMinutes = selectedClass.value.duration;
+            const startHour = parseInt(startTime);
+            const endHour = parseInt(endTime);
 
             for (let hour = startHour; hour <= endHour; hour++) {
-              availableHours.push(`${hour}:00`);
+              if (hour === endHour && classDurationMinutes < 60) {
+                // Calculate the last available hour and minute
+                const lastAvailableHour =
+                  endHour - Math.floor(classDurationMinutes / 60);
+                const lastAvailableMinute = 60 - (classDurationMinutes % 60);
+                availableHours.push(
+                  `${lastAvailableHour}:${lastAvailableMinute
+                    .toString()
+                    .padStart(2, "0")}`
+                );
+              } else {
+                availableHours.push(`${hour}:00`);
+              }
             }
 
             return availableHours;
@@ -152,9 +199,9 @@ export default {
     });
 
     //now i need to send and take booked classes from the store to check new availtime slots
-
+    // --------------------------------------------------------------------------------------------------------------------------------------------------------
     // const router = useRouter();
-
+    // --------------------------------------------------------------------------------------------------------------------------------------------------------
     const fetchBookedClasses = async () => {
       try {
         const response = await fetch(
@@ -172,13 +219,13 @@ export default {
         console.error("Error while fetching booked classes:", error);
       }
     };
-
+    // --------------------------------------------------------------------------------------------------------------------------------------------------------
     onMounted(async () => {
       // choosing a default to be already available in the menu offer
       selectedClass.value = availableClasses.value[0];
       fetchBookedClasses();
     });
-
+    // --------------------------------------------------------------------------------------------------------------------------------------------------------
     const handleDropdownChange = () => {
       const bookingAvailability = checkBookingAvailability();
       if (bookingAvailability.isAlreadyBooked) {
@@ -187,7 +234,7 @@ export default {
         validationMessage.value = ""; // Clear the validation message if not booked
       }
     };
-
+    // --------------------------------------------------------------------------------------------------------------------------------------------------------
     const checkBookingAvailability = () => {
       const selectedClassName = selectedClass.value.name;
       const selectedDateValue = selectedDate.value;
@@ -230,7 +277,42 @@ export default {
     //   // Validation logic
     //   // ...
     // };
+    // --------------------------------------------------------------------------------------------------------------------------------------------------------
+    const timeIsBooked = (time) => {
+      const selectedClassName = selectedClass.value.name;
+      const selectedDateValue = selectedDate.value;
 
+      const classesStore = useClassesStore();
+      const bookedClasses = classesStore.getBookedClasses;
+
+      for (const item in bookedClasses) {
+        const bookedClass = bookedClasses[item];
+        if (
+          bookedClass.className === selectedClassName &&
+          bookedClass.selectedDate === selectedDateValue &&
+          isTimeInRange(time, bookedClass.selectedTime, bookedClass.duration)
+        ) {
+          return true;
+        }
+      }
+
+      return false;
+    };
+
+    const isTimeInRange = (time, startTime, duration) => {
+      const [startHour, startMinute] = startTime.split(":").map(Number);
+      const [checkHour, checkMinute] = time.split(":").map(Number);
+
+      const startTimeMinutes = startHour * 60 + startMinute;
+      const endTimeMinutes = startTimeMinutes + duration;
+      const checkTimeMinutes = checkHour * 60 + checkMinute;
+
+      return (
+        checkTimeMinutes >= startTimeMinutes &&
+        checkTimeMinutes < endTimeMinutes
+      );
+    };
+    // --------------------------------------------------------------------------------------------------------------------------------------------------------
     const isFormInvalid = computed(() => {
       return isAlreadyBooked;
     });
@@ -307,6 +389,7 @@ export default {
       checkBookingAvailability,
       handleDropdownChange,
       isFormInvalid,
+      timeIsBooked,
     };
   },
 };
