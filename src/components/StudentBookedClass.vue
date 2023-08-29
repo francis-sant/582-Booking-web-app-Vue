@@ -12,7 +12,7 @@
       <p>Class Name: {{ student.className }}</p>
       <p>Selected Date: {{ student.selectedDate }}</p>
       <p>Selected Time: {{ student.selectedTime }}</p>
-     
+
       <button @click="editBooking(student)">Edit</button>
       <hr />
     </div>
@@ -43,7 +43,7 @@ export default {
     console.log("bookedclass", bookedClass.value);
 
     const cancelClass = (student) => {
-            console.log("Canceling class for:", student);
+      console.log("Canceling class for:", student);
     };
 
     const editField = (studentId) => {

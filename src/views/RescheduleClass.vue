@@ -37,7 +37,11 @@ export default {
   },
   created() {
     // this.availableClasses = [];
-    fetch("http://localhost:3000/classes/booking/bookedclasses")
+
+    // Rescheduling store happening here
+    fetch(
+      "https://cautious-goldfish-44j4rv5xwv5hg66-3000.app.github.dev/classes/booking/bookedclasses"
+    )
       .then((response) => response.json())
       .then((rescheduledClasses) => {
         const classesStore = useClassesStore();

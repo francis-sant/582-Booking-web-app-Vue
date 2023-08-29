@@ -28,7 +28,7 @@
     <label for="type">Duration - in minutes</label>
     <input type="text" v-model="duration" required />
 
-    //add fields for breaks
+    <!-- //add fields for breaks -->
     <label for="type">Breaks - in minutes</label>
     <input type="text" v-model="breaks" required />
 
@@ -48,7 +48,7 @@
 
 <script>
 import { ref } from "vue";
-// import { useTeacherStore } from "@/store/teacher";
+import { useTeacherStore } from "@/store/teacher.js";
 import { useRouter } from "vue-router";
 
 export default {
@@ -97,17 +97,24 @@ export default {
       };
 
       try {
-        await fetch("http://localhost:3000/services/teacher", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(schedule),
-        });
+        await fetch(
+          "https://cautious-goldfish-44j4rv5xwv5hg66-3000.app.github.dev/services",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(schedule),
+          }
+        );
+        console.log(schedule);
 
+        const teacherstore = useTeacherStore();
+        teacherstore.setAvClasses(schedule);
         successMessage.value = "Service Added Sucessfully!";
+
         clearForm();
-        router.push("/services/teacher");
+        router.push("/services");
       } catch (error) {
         failMessage.value = "Your Request Failed!" + error;
         console.error(error);

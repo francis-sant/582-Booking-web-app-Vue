@@ -210,7 +210,7 @@ export default {
     const fetchBookedClasses = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3000/classes/booking/bookedclasses"
+          "https://cautious-goldfish-44j4rv5xwv5hg66-3000.app.github.dev/classes/booking/bookedclasses"
         );
         if (response.ok) {
           const bookedClass = await response.json();
@@ -353,13 +353,16 @@ export default {
 
       // Save the booking details to a collection or store as needed
       try {
-        const response = await fetch("http://localhost:3000/classes/booking", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(combinedBookingDetails),
-        });
+        const response = await fetch(
+          "https://cautious-goldfish-44j4rv5xwv5hg66-3000.app.github.dev/classes/booking",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(combinedBookingDetails),
+          }
+        );
 
         if (response.ok) {
           bookingConfirmed.value = true;

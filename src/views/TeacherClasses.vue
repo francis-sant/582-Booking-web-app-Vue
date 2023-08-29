@@ -1,10 +1,10 @@
 <template>
   <div>
-    <h2>Teacher classes</h2>
+    <h2>Insert My Service</h2>
     <TeacherScheduleForm />
   </div>
   <div>
-    <h1>Classes Available</h1>
+    <h1>My Available Services</h1>
     <div>
       <MyClassesDisplay />
     </div>

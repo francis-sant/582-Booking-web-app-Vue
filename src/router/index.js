@@ -28,13 +28,13 @@ const routes = [
     ],
   },
   {
-    path: "/teacherclasses",
-    name: "teacherclasses",
+    path: "/services",
+    name: "services",
     component: TeacherClasses,
     children: [
       {
-        path: "/services/teacher",
-        name: "teacherclasses",
+        path: "/services/booked",
+        name: "services",
         component: TeacherClasses,
       },
     ],

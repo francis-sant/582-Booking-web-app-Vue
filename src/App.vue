@@ -1,27 +1,47 @@
 <template>
   <nav>
     <router-link to="/">Home</router-link> |
-    <router-link to="/reschedule">Reschedule My Class</router-link> |
     <router-link to="/classes">Book My Class</router-link> |
-    <router-link to="/teacherclasses">Insert my Services</router-link> |
+    <router-link to="/services">Insert my Services</router-link> |
+    <router-link to="/reschedule">Reschedule My Class</router-link> |
   </nav>
   <router-view />
 </template>
 
 <script>
 import { useClassesStore } from "@/store/classes.js";
+import { useTeacherStore } from "@/store/teacher.js";
+import { onMounted } from "vue";
 
 export default {
   name: "App",
 
-  created() {
-    fetch("http://localhost:3000/classes")
-      .then((response) => response.json())
-      .then((classes) => {
-        console.log(classes);
-        const classesStore = useClassesStore();
-        classesStore.setAvClasses(classes); // Set the data after fetching
-      });
+  setup() {
+    const fetchBookedClasses = async () => {
+      try {
+        const response = await fetch(
+          "https://cautious-goldfish-44j4rv5xwv5hg66-3000.app.github.dev/services/booked"
+        );
+        if (response.ok) {
+          const bookedClass = await response.json();
+          // bookedClasses.value = bookedClass; // Store fetched booked classes
+          const classesStore = useClassesStore();
+          classesStore.setAvClasses(bookedClass);
+
+          const teacherStore = useTeacherStore();
+          teacherStore.setAvClasses(bookedClass);
+        } else {
+          console.error("Failed to fetch booked classes:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error while fetching booked classes:", error);
+      }
+    };
+    // --------------------------------------------------------------------------------------------------------------------------------------------------------
+    onMounted(async () => {
+      // choosing a default to be already available in the menu offer
+      fetchBookedClasses();
+    });
   },
 };
 </script>
@@ -66,6 +86,7 @@ form {
   width: 400px;
   margin: auto;
 }
+
 .classesDisplay {
   border: 3px solid #8ee1b7;
 }
@@ -77,6 +98,7 @@ form {
   padding: 0;
   margin-bottom: 10px;
 }
+
 .titulo {
   font-size: 18px;
   margin: auto;

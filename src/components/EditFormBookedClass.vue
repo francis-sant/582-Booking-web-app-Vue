@@ -8,7 +8,6 @@
       <input v-model="editableStudent.selectedDate" />
 
       <select id="date" v-model="editableStudent.selectedDate"></select>
-     
 
       <button type="submit" @click="saveChanges">Save</button>
       <button type="button" @click="cancelEdit">Cancel</button>

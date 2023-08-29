@@ -10,7 +10,7 @@ const port = 3000;
 
 // MongoDB connection URI
 const uri =
-
+  "mongodb+srv://francis-sant:@cluster0.tzdfzyh.mongodb.net/?retryWrites=true&w=majority";
 //it will parse the income request body into json for all requests
 app.use(bodyParser.json());
 
@@ -38,7 +38,7 @@ app.post("/", async (req, res) => {
   }
 });
 
-app.get("/teacherclasses/booked", async (req, res) => {
+app.get("/services/booked", async (req, res) => {
   const client = new MongoClient(uri);
 
   try {
@@ -46,7 +46,7 @@ app.get("/teacherclasses/booked", async (req, res) => {
     const database = client.db("bookingApp");
     // const collection = database.collection("student");
 
-    const collection = database.collection("teacher");
+    const collection = database.collection("services");
     const result = await collection.find({}).toArray();
     // const result = await collection.insertOne(req.params);
 
@@ -62,7 +62,7 @@ app.get("/teacherclasses/booked", async (req, res) => {
   }
 });
 
-app.post("/services/teacher", async (req, res) => {
+app.post("/services", async (req, res) => {
   const client = new MongoClient(uri);
 
   try {

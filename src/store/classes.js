@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 export const useClassesStore = defineStore("classes", {
   state: () => ({
     availableClasses: [],
-    rescheduledClasses: [], // Track booked time slots for each class
+    rescheduledClasses: [],
     bookedClasses: [],
   }),
   getters: {
