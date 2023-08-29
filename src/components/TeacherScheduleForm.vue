@@ -28,6 +28,10 @@
     <label for="type">Duration - in minutes</label>
     <input type="text" v-model="duration" required />
 
+    //add fields for breaks
+    <label for="type">Breaks - in minutes</label>
+    <input type="text" v-model="breaks" required />
+
     <label for="price">Price</label>
     <input type="number" v-model="price" required />
 
@@ -65,6 +69,7 @@ export default {
     const successMessage = ref("");
     const failMessage = ref("");
     const duration = ref("");
+    const breaks = ref("");
 
     const dateTimes = ref([{ date: "", startTime: "", endTime: "" }]);
 
@@ -88,6 +93,7 @@ export default {
         price: price.value,
         duration: duration.value,
         dateTimes: dateTimes.value,
+        breaks: breaks.value,
       };
 
       try {
@@ -116,6 +122,7 @@ export default {
       price.value = "";
       selectedDays.value = [];
       duration.value = "";
+      breaks.value = "";
     };
 
     return {
@@ -133,6 +140,7 @@ export default {
       dateTimes,
       addDateTime,
       removeDateTime,
+      breaks,
     };
   },
 };

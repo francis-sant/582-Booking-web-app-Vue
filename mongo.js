@@ -135,6 +135,30 @@ app.post("/classes/booking", async (req, res) => {
   }
 });
 
+app.post("/classes/booking/:id", async (req, res) => {
+  const client = new MongoClient(uri);
+
+  try {
+    await client.connect();
+    const database = client.db("bookingApp");
+    // const collection = database.collection("student");
+
+    const collection = database.collection("bookedClasses");
+    // const result = await collection.find({}).toArray();
+    const result = await collection.updateOne(req.body);
+
+    console.log(result);
+    res.json(result);
+  } catch (err) {
+    //The default error handler
+    console.error("Error retrieving data:", err);
+
+    res.status(500).json({ error: "An error occurred while retrieving data." });
+  } finally {
+    await client.close();
+  }
+});
+
 app.get("/classes/booking/bookedclasses", async (req, res) => {
   const client = new MongoClient(uri);
 

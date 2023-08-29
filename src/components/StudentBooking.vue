@@ -165,28 +165,33 @@ export default {
             let startTime = selectedDateTime.startTime;
             let endTime = selectedDateTime.endTime;
 
-            const availableHours = [];
             const classDurationMinutes = selectedClass.value.duration;
             const startHour = parseInt(startTime);
             const endHour = parseInt(endTime);
 
+            const availableHours = [];
+
+            // Loop through each hour slot
             for (let hour = startHour; hour <= endHour; hour++) {
+              let availableMinute = 0;
+
+              // Check if the hour is equal to the end hour
               if (hour === endHour && classDurationMinutes < 60) {
-                // Calculate the last available hour and minute
-                const lastAvailableHour =
-                  endHour - Math.floor(classDurationMinutes / 60);
-                const lastAvailableMinute = 60 - (classDurationMinutes % 60);
-                availableHours.push(
-                  `${lastAvailableHour}:${lastAvailableMinute
-                    .toString()
-                    .padStart(2, "0")}`
-                );
-              } else {
-                availableHours.push(`${hour}:00`);
+                availableMinute = 60 - classDurationMinutes;
               }
+
+              // Construct the available time slot
+              availableHours.push(
+                `${hour}:${availableMinute.toString().padStart(2, "0")}`
+              );
             }
 
-            return availableHours;
+            // Filter out booked time slots
+            const filteredAvailableHours = availableHours.filter(
+              (time) => !timeIsBooked(time)
+            );
+
+            return filteredAvailableHours;
           }
         }
 

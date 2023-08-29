@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import ClassesAvailable from "../views/ClassesAvailable.vue";
 import TeacherClasses from "../views/TeacherClasses.vue";
-import AboutViewVue from "@/views/AboutView.vue";
+import RescheduleClass from "@/views/RescheduleClass.vue";
 
 const routes = [
   {
@@ -41,9 +41,9 @@ const routes = [
   },
 
   {
-    path: "/about",
-    name: "about",
-    component: AboutViewVue,
+    path: "/reschedule",
+    name: "reschedule",
+    component: RescheduleClass,
 
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route

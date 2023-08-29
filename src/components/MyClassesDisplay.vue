@@ -8,14 +8,13 @@
         <p>Modality: {{ item.modality }}</p>
         <p>Duration: {{ item.duration }} minutes</p>
 
-        <p>Data e Hora</p>
+        <p>Date and Time:</p>
         <ul>
           <li v-for="(day, index) in item.dateTimes" :key="index">
             {{ day.date }} - {{ day.startTime }} até {{ day.endTime }}
           </li>
         </ul>
 
-        <p>Horário Disponível: {{ item.startTime }} até {{ item.endTime }}</p>
         <p>Preço: R$ {{ item.price }}</p>
       </div>
     </div>

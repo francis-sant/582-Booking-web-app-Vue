@@ -1,9 +1,9 @@
 <template>
   <nav>
     <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link> |
+    <router-link to="/reschedule">Reschedule My Class</router-link> |
     <router-link to="/classes">Book My Class</router-link> |
-    <router-link to="/teacherclasses">Teacher Classes</router-link> |
+    <router-link to="/teacherclasses">Insert my Services</router-link> |
   </nav>
   <router-view />
 </template>

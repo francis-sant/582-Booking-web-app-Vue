@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 export const useClassesStore = defineStore("classes", {
   state: () => ({
     availableClasses: [],
-    bookedTimeSlots: [], // Track booked time slots for each class
+    rescheduledClasses: [], // Track booked time slots for each class
     bookedClasses: [],
   }),
   getters: {
@@ -16,8 +16,8 @@ export const useClassesStore = defineStore("classes", {
     setAvClasses(classes) {
       this.availableClasses = classes;
     },
-    setBookedTimeSlots(bookedTimeSlots) {
-      this.bookedTimeSlots = bookedTimeSlots;
+    setRescheduled(rescheduledClasses) {
+      this.rescheduledClasses = rescheduledClasses;
     },
     addBookedClass(bookedClass) {
       this.bookedClasses.push(bookedClass);
