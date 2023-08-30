@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div>
     <div v-if="!editing">
       <p>Name: {{ student.name }}</p>
@@ -51,4 +51,4 @@ export default {
     };
   },
 };
-</script>
+</script> -->

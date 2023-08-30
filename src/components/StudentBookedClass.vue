@@ -2,8 +2,8 @@
   <div>
     <h2>Student Class Dashboard</h2>
     <div
-      v-for="(student, index) in bookedClass[0]"
-      :key="index"
+      v-for="student in bookedClass[0]"
+      :key="student._id"
       class="student-details"
     >
       <h3>My Classes Information</h3>
@@ -13,7 +13,7 @@
       <p>Selected Date: {{ student.selectedDate }}</p>
       <p>Selected Time: {{ student.selectedTime }}</p>
 
-      <button @click="editBooking(student)">Edit</button>
+      <button @click="editBooking(student, true)">Edit</button>
       <hr />
     </div>
     <EditFormBookedClass
@@ -35,43 +35,13 @@ export default {
   components: {
     EditFormBookedClass,
   },
-
   setup() {
     const store = useClassesStore();
     const bookedClass = ref(store.getBookedClasses);
     const selectedStudent = ref(null);
 
-    // async function updateBookedClassApi(updatedStudent) {
-    //   try {
-    //     const response = await fetch(
-    //       `http://localhost:3000/classes/booking/${updatedStudent._id}`,
-    //       {
-    //         method: "PUT",
-    //         headers: {
-    //           "Content-Type": "application/json",
-    //         },
-    //         body: JSON.stringify(updatedStudent),
-    //       }
-    //     );
-
-    //     return response.ok;
-    //   } catch (error) {
-    //     console.error("An error occurred:", error);
-    //     return false;
-    //   }
-    // }
-
     const editBooking = (bookingDetails) => {
       selectedStudent.value = bookingDetails;
-    };
-
-    const updateStudentClass = async (updatedInfo) => {
-      const success = await store.updateBookedClass(updatedInfo);
-      if (success) {
-        selectedStudent.value = null;
-      } else {
-        console.error("Error updating booked class");
-      }
     };
 
     const cancelEdit = () => {
@@ -82,9 +52,34 @@ export default {
       bookedClass,
       selectedStudent,
       editBooking,
-      updateStudentClass,
       cancelEdit,
     };
+  },
+  methods: {
+    async updateStudentClass(updatedStudent) {
+      try {
+        const response = await fetch(
+          `http://localhost:3000/classes/booking`, // Assuming you have an _id field in your student object
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedStudent),
+          }
+        );
+
+        if (response.ok) {
+          // Update store or necessary state
+          console.log(updatedStudent);
+          this.selectedStudent = null;
+        } else {
+          console.error("Error updating student:", response.statusText);
+        }
+      } catch (error) {
+        console.error("An error occurred:", error);
+      } // Remove the comma from here
+    },
   },
 };
 </script>

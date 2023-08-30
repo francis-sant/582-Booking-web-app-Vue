@@ -1,20 +1,18 @@
 <template>
   <div class="about">
     <h1>Reschedule My Class</h1>
-    <StudentBookedClass />
-    <ReschedulingClass />
+    <StudentBookedClass @edit-booking="editBooking" />
   </div>
 </template>
 
 <script>
 import { useClassesStore } from "@/store/classes.js";
 import StudentBookedClass from "@/components/StudentBookedClass.vue";
-import ReschedulingClass from "@/components/ReschedulingClass.vue";
+
 export default {
   name: "RescheduleClass",
   components: {
     StudentBookedClass,
-    ReschedulingClass,
   },
   data() {
     return {
@@ -23,21 +21,18 @@ export default {
     };
   },
   methods: {
-    updateStudentClass(updatedStudent) {
-      //fetch here to update the student class in the database
-      // After successful update, update the bookedClass array
-      // and reset selectedStudent
-      console.log("Updating student class:", updatedStudent);
-
-      // method to update the class in the store
-      // const updatedBookedClass = updateStudentClassInStore(updatedStudent);
-
-      // Update the bookedClass array
-      // this.bookedClass[0][updatedStudent._id] = updatedBookedClass;
-
-      this.selectedStudent = null; // Reset selectedStudent after update
+    async editBooking(student, editMode) {
+      if (editMode) {
+        // This is for editing the student
+        this.selectedStudent = student;
+      } else {
+        // This is for emitting the student details to the form
+        this.$emit("edit-booking", student);
+        console.log("emmiting edit");
+      }
     },
   },
+
   created() {
     // this.availableClasses = [];
 
