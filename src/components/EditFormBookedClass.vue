@@ -9,7 +9,7 @@
 
       <select id="date" v-model="editableStudent.selectedDate"></select>
 
-      <button type="submit" @click="saveChanges">Save</button>
+      <button type="submit">Save</button>
       <button type="button" @click="cancelEdit">Cancel</button>
     </form>
   </div>
@@ -25,17 +25,33 @@ export default {
       editableStudent: { ...this.student },
     };
   },
-
   methods: {
-    saveChanges() {
-      // Implement logic to save the changes to the database
-      // Update the selected student with edited data
-      this.$emit("save", this.editableStudent);
-    },
-    handleSubmit() {
-      // Get the updated data from the form and emit the save event
-      const updatedStudent = { ...this.student /* updated fields */ };
-      this.$emit("save", updatedStudent);
+    async handleSubmit() {
+      const updatedStudent = {
+        _id: this.editableStudent._id,
+        firstName: this.editableStudent.firstName,
+        email: this.editableStudent.email,
+        className: this.editableStudent.className,
+        selectedDate: this.editableStudent.selectedDate,
+        // Add other fields as needed
+      };
+
+      const response = await fetch(
+        `http://localhost:3000/classes/booking/${updatedStudent._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedStudent),
+        }
+      );
+
+      if (response.ok) {
+        this.$emit("save", updatedStudent);
+      } else {
+        // Handle error if needed
+      }
     },
     cancelEdit() {
       this.$emit("cancel");

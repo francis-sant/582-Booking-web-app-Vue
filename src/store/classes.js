@@ -8,8 +8,8 @@ export const useClassesStore = defineStore("classes", {
   }),
   getters: {
     getAvClasses: (state) => state.availableClasses,
-    getBookedClasses() {
-      return this.bookedClasses;
+    getBookedClasses(state) {
+      return state.bookedClasses;
     },
   },
   actions: {
@@ -23,5 +23,41 @@ export const useClassesStore = defineStore("classes", {
       this.bookedClasses.push(bookedClass);
     },
   },
+
+  // async updateBookedClass(updatedStudent) {
+  //   const success = await updateBookedClassApi(updatedStudent);
+
+  //   if (success) {
+  //     const updatedStudentIndex = this.bookedClasses.findIndex(
+  //       (student) => student._id === updatedStudent._id
+  //     );
+
+  //     if (updatedStudentIndex !== -1) {
+  //       this.bookedClasses[updatedStudentIndex] = updatedStudent;
+  //     }
+  //   } else {
+  //     console.error("Error updating booked class");
+  //   }
+  // },
+
+  // async updateBookedClass(updatedStudent) {
+  //   const response = await fetch(`/classes/booking/${updatedStudent._id}`, {
+  //     method: "PUT",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(updatedStudent),
+  //   });
+
+  //   if (response.ok) {
+  //     const updatedStudentIndex = this.bookedClasses.findIndex(
+  //       (student) => student._id === updatedStudent._id
+  //     );
+
+  //     if (updatedStudentIndex !== -1) {
+  //       this.bookedClasses[updatedStudentIndex] = updatedStudent;
+  //     }
+  //   }
+  // },
   //ps:class cannot be used as a variable name
 });

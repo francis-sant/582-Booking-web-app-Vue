@@ -97,16 +97,13 @@ export default {
       };
 
       try {
-        await fetch(
-          "https://cautious-goldfish-44j4rv5xwv5hg66-3000.app.github.dev/services",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(schedule),
-          }
-        );
+        await fetch("http://localhost:3000/services", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(schedule),
+        });
         console.log(schedule);
 
         const teacherstore = useTeacherStore();

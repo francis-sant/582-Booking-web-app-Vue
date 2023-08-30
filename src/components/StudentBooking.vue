@@ -2,7 +2,37 @@
   <div>
     <h2>My Classes</h2>
     <div class="myclasses">
-      <label for="class">Choose a Class:</label>
+      <Dropdown
+        :availableClasses="availableClasses"
+        :availableDate="availableDate"
+        :availableTime="availableTime"
+        :isAlreadyBooked="isAlreadyBooked"
+        @change="handleDropdownChange"
+      />
+      <!-- <Dropdown
+      id="class"
+      label="Choose a Class:"
+      :selectedValue="selectedClass"
+      :options="availableClasses"
+      @change="handleClassChange"
+    />
+
+    <Dropdown
+      id="date"
+      label="Choose a Date:"
+      :selectedValue="selectedDate"
+      :options="availableDate"
+      @change="handleDateChange"
+    />
+
+    <Dropdown
+      id="time"
+      label="Choose a Time:"
+      :selectedValue="selectedTime"
+      :options="availableTime"
+      @change="handleTimeChange"
+    /> -->
+      <!-- <label for="class">Choose a Class:</label>
       <select id="class" v-model="selectedClass" @change="handleDropdownChange">
         <option
           v-for="classItem in availableClasses"
@@ -33,7 +63,7 @@
         >
           {{ time }}
         </option>
-      </select>
+      </select> -->
     </div>
 
     <div class="validationMessage">
@@ -49,8 +79,8 @@
     </div>
 
     <PersonalInfo
+      :is-form-empty="isFormEmpty"
       :student-info="studentInfo"
-      :isFormInvalid="isAlreadyBooked"
       @booking-confirmed="sendBooking"
     />
 
@@ -75,17 +105,27 @@ import { useClassesStore } from "@/store/classes.js";
 import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import PersonalInfo from "./PersonalInfo.vue";
+import Dropdown from "@/components/DropDown.vue";
+import { useBookingLogic } from "@/composables/bookingLogic.js"; // Import the composable
 
 export default {
   name: "StudentBooking",
   components: {
     PersonalInfo,
+    Dropdown,
   },
   setup() {
+    const {
+      fetchBookedClasses,
+      timeIsBooked,
+      calculateAvailableTimeSlots,
+      checkBookingAvailability,
+    } = useBookingLogic(); // Use the functions from the composable
     const classesStore = useClassesStore();
     const availableClasses = computed(() => classesStore.getAvClasses);
     const selectedClass = ref(null);
     const selectedDate = ref(null);
+    const selectedTime = ref(null);
     const firstName = ref("");
     const lastName = ref("");
     const phone = ref("");
@@ -93,7 +133,7 @@ export default {
     const bookingConfirmed = ref(false);
     const validationMessage = ref("");
     const bookingDetails = ref(null);
-    const selectedTime = ref(null);
+
     const isAlreadyBooked = ref(false);
     const studentInfo = ref({
       firstName: "",
@@ -103,6 +143,11 @@ export default {
     });
 
     const router = useRouter();
+    selectedClass.value = availableClasses.value[0];
+    onMounted(async () => {
+      selectedClass.value = availableClasses.value[0];
+      fetchBookedClasses();
+    });
 
     const availableDate = computed(() => {
       if (!selectedClass.value) {
@@ -116,6 +161,75 @@ export default {
 
       return dates;
     });
+
+    const availableTime = computed(() => {
+      calculateAvailableTimeSlots(
+        selectedClass.value,
+        selectedDate.value,
+        selectedTime.value
+      );
+      return calculateAvailableTimeSlots(
+        selectedClass.value,
+        selectedDate.value,
+        selectedTime.value
+      );
+    });
+    // ----------------------------------------------------------------------
+    // const handleDropdownChange = (type, value) => {
+    //   if (type === "class") {
+    //     selectedClass.value = value;
+    //     selectedDate.value = null;
+    //     selectedTime.value = null;
+    //   } else if (type === "date") {
+    //     selectedDate.value = value;
+    //     selectedTime.value = null;
+    //   } else if (type === "time") {
+    //     selectedTime.value = value;
+    //   }
+    //   console.log(type, value);
+    //   checkBookingAvailability(
+    //     selectedClass.value,
+    //     selectedDate.value,
+    //     selectedTime.value
+    //   );
+    // };
+    // ----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
+    const handleDropdownChange = (type, value) => {
+      if (type === "class") {
+        selectedClass.value = value;
+        selectedDate.value = null;
+        selectedTime.value = null;
+      } else if (type === "date") {
+        selectedDate.value = value;
+        selectedTime.value = null;
+      } else if (type === "time") {
+        selectedTime.value = value;
+      }
+      console.log(type, value);
+
+      // Call checkBookingAvailability from the composable and get the result
+      const bookingAvailability = checkBookingAvailability(
+        selectedClass.value,
+        selectedDate.value,
+        selectedTime.value
+      );
+
+      // Update the validation message based on the result
+      validationMessage.value = bookingAvailability.validationMessage;
+    };
+
+    // ... Other functions and return values ...
+
+    // --------------------------------------------------------------------------
+    // const handleDropdownChange = () => {
+    //   const bookingAvailability = checkBookingAvailability();
+    //   if (bookingAvailability.isAlreadyBooked) {
+    //     validationMessage.value = bookingAvailability.validationMessage;
+    //   } else {
+    //     validationMessage.value = ""; // Clear the validation message if not booked
+    //   }
+    // };
     // --------------------------------------------------------------------------------------------------------------------------------------------------------
     // const availableTime = computed(() => {
     //   if (!selectedClass.value || !selectedDate.value) {
@@ -151,175 +265,186 @@ export default {
     //   }
     // });
     // --------------------------------------------------------------------------------------------------------------------------------------------------------
-    const availableTime = computed(() => {
-      if (!selectedClass.value || !selectedDate.value) {
-        return ["Select One Date First"];
-      } else {
-        const selectedDateValue = selectedDate.value;
-        const dateTimes = selectedClass.value.dateTimes;
+    // const availableTime = computed(() => {
+    //   if (!selectedClass.value || !selectedDate.value) {
+    //     return ["Select One Date First"];
+    //   } else {
+    //     const selectedDateValue = selectedDate.value;
+    //     const dateTimes = selectedClass.value.dateTimes;
 
-        let selectedDateTime = null;
-        for (let i = 0; i < dateTimes.length; i++) {
-          if (dateTimes[i].date === selectedDateValue) {
-            selectedDateTime = dateTimes[i];
-            let startTime = selectedDateTime.startTime;
-            let endTime = selectedDateTime.endTime;
+    //     let selectedDateTime = null;
+    //     for (let i = 0; i < dateTimes.length; i++) {
+    //       if (dateTimes[i].date === selectedDateValue) {
+    //         selectedDateTime = dateTimes[i];
+    //         let startTime = selectedDateTime.startTime;
+    //         let endTime = selectedDateTime.endTime;
 
-            const classDurationMinutes = selectedClass.value.duration;
-            const startHour = parseInt(startTime);
-            const endHour = parseInt(endTime);
+    //         const classDurationMinutes = selectedClass.value.duration;
+    //         const startHour = parseInt(startTime);
+    //         const endHour = parseInt(endTime);
 
-            const availableHours = [];
+    //         const availableHours = [];
 
-            // Loop through each hour slot
-            for (let hour = startHour; hour <= endHour; hour++) {
-              let availableMinute = 0;
+    //         // Loop through each hour slot
+    //         for (let hour = startHour; hour <= endHour; hour++) {
+    //           let availableMinute = 0;
 
-              // Check if the hour is equal to the end hour
-              if (hour === endHour && classDurationMinutes < 60) {
-                availableMinute = 60 - classDurationMinutes;
-              }
+    //           // Check if the hour is equal to the end hour
+    //           if (hour === endHour && classDurationMinutes < 60) {
+    //             availableMinute = 60 - classDurationMinutes;
+    //           }
 
-              // Construct the available time slot
-              availableHours.push(
-                `${hour}:${availableMinute.toString().padStart(2, "0")}`
-              );
-            }
+    //           // Construct the available time slot
+    //           availableHours.push(
+    //             `${hour}:${availableMinute.toString().padStart(2, "0")}`
+    //           );
+    //         }
 
-            // Filter out booked time slots
-            const filteredAvailableHours = availableHours.filter(
-              (time) => !timeIsBooked(time)
-            );
+    //         // Filter out booked time slots
+    //         const filteredAvailableHours = availableHours.filter(
+    //           (time) => !timeIsBooked(time)
+    //         );
 
-            return filteredAvailableHours;
-          }
-        }
+    //         return filteredAvailableHours;
+    //       }
+    //     }
 
-        if (selectedDateTime) {
-          return [selectedDateTime.startTime, selectedDateTime.endTime];
-        } else {
-          return ["No Available Times for Selected Date"];
-        }
-      }
-    });
+    //     if (selectedDateTime) {
+    //       return [selectedDateTime.startTime, selectedDateTime.endTime];
+    //     } else {
+    //       return ["No Available Times for Selected Date"];
+    //     }
+    //   }
+    // });
 
     //now i need to send and take booked classes from the store to check new availtime slots
     // --------------------------------------------------------------------------------------------------------------------------------------------------------
     // const router = useRouter();
     // --------------------------------------------------------------------------------------------------------------------------------------------------------
-    const fetchBookedClasses = async () => {
-      try {
-        const response = await fetch(
-          "https://cautious-goldfish-44j4rv5xwv5hg66-3000.app.github.dev/classes/booking/bookedclasses"
-        );
-        if (response.ok) {
-          const bookedClass = await response.json();
-          // bookedClasses.value = bookedClass; // Store fetched booked classes
-          const classesStore = useClassesStore();
-          classesStore.addBookedClass(bookedClass);
-        } else {
-          console.error("Failed to fetch booked classes:", response.statusText);
-        }
-      } catch (error) {
-        console.error("Error while fetching booked classes:", error);
-      }
-    };
+    // const fetchBookedClasses = async () => {
+    //   try {
+    //     const response = await fetch(
+    //       "http://localhost:3000/classes/booking/bookedclasses"
+    //     );
+    //     if (response.ok) {
+    //       const bookedClass = await response.json();
+    //       // bookedClasses.value = bookedClass; // Store fetched booked classes
+    //       const classesStore = useClassesStore();
+    //       classesStore.addBookedClass(bookedClass);
+    //     } else {
+    //       console.error("Failed to fetch booked classes:", response.statusText);
+    //     }
+    //   } catch (error) {
+    //     console.error("Error while fetching booked classes:", error);
+    //   }
+    // };
     // --------------------------------------------------------------------------------------------------------------------------------------------------------
-    onMounted(async () => {
-      // choosing a default to be already available in the menu offer
-      selectedClass.value = availableClasses.value[0];
-      fetchBookedClasses();
-    });
+    // onMounted(async () => {
+    //   // choosing a default to be already available in the menu offer
+    //   selectedClass.value = availableClasses.value[0];
+    //   fetchBookedClasses();
+    // });
     // --------------------------------------------------------------------------------------------------------------------------------------------------------
-    const handleDropdownChange = () => {
-      const bookingAvailability = checkBookingAvailability();
-      if (bookingAvailability.isAlreadyBooked) {
-        validationMessage.value = bookingAvailability.validationMessage;
-      } else {
-        validationMessage.value = ""; // Clear the validation message if not booked
-      }
-    };
+    // const handleDropdownChange = () => {
+    //   const bookingAvailability = checkBookingAvailability();
+    //   if (bookingAvailability.isAlreadyBooked) {
+    //     validationMessage.value = bookingAvailability.validationMessage;
+    //   } else {
+    //     validationMessage.value = ""; // Clear the validation message if not booked
+    //   }
+    // };
     // --------------------------------------------------------------------------------------------------------------------------------------------------------
-    const checkBookingAvailability = () => {
-      const selectedClassName = selectedClass.value.name;
-      const selectedDateValue = selectedDate.value;
-      const selectedTimeValue = selectedTime.value;
-      console.log("Selected Class:", selectedClassName);
-      const classesStore = useClassesStore();
+    // const checkBookingAvailability = () => {
+    //   const selectedClassName = selectedClass.value.name;
+    //   const selectedDateValue = selectedDate.value;
+    //   const selectedTimeValue = selectedTime.value;
+    //   console.log("Selected Class:", selectedClassName);
+    //   const classesStore = useClassesStore();
 
-      const bookedClasses = classesStore.getBookedClasses;
+    //   const bookedClasses = classesStore.getBookedClasses;
 
-      // console.log("Booked classes test:", bookedClasses[0]);
+    //   // console.log("Booked classes test:", bookedClasses[0]);
 
-      let newCheckingBooking = bookedClasses[0];
+    //   let newCheckingBooking = bookedClasses[0];
 
-      for (let item in newCheckingBooking) {
-        // console.log("Item:", newCheckingBooking[item].className);
-        if (
-          newCheckingBooking[item].className === selectedClassName &&
-          newCheckingBooking[item].selectedDate === selectedDateValue &&
-          newCheckingBooking[item].selectedTime === selectedTimeValue
-        ) {
-          console.log("Already booked");
-          validationMessage.value =
-            "There is no spot available at this time anymore, choose another time";
-          isAlreadyBooked.value = true;
-          console.log(isAlreadyBooked.value);
-          return {
-            isAlreadyBooked: true,
-            validationMessage: validationMessage.value,
-          };
-        }
-      }
+    //   for (let item in newCheckingBooking) {
+    //     // console.log("Item:", newCheckingBooking[item].className);
+    //     if (
+    //       newCheckingBooking[item].className === selectedClassName &&
+    //       newCheckingBooking[item].selectedDate === selectedDateValue &&
+    //       newCheckingBooking[item].selectedTime === selectedTimeValue
+    //     ) {
+    //       console.log("Already booked");
+    //       validationMessage.value =
+    //         "There is no spot available at this time anymore, choose another time";
+    //       isAlreadyBooked.value = true;
+    //       console.log(isAlreadyBooked.value);
+    //       return {
+    //         isAlreadyBooked: true,
+    //         validationMessage: validationMessage.value,
+    //       };
+    //     }
+    //   }
 
-      // Reset the ref value when the condition is not met
-      isAlreadyBooked.value = false;
-      console.log(isAlreadyBooked.value);
-      return { isAlreadyBooked: false, validationMessage: null };
-    };
+    //   // Reset the ref value when the condition is not met
+    //   isAlreadyBooked.value = false;
+    //   console.log(isAlreadyBooked.value);
+    //   return { isAlreadyBooked: false, validationMessage: null };
+    // };
 
     // const validateForm = () => {
     //   // Validation logic
     //   // ...
     // };
     // --------------------------------------------------------------------------------------------------------------------------------------------------------
-    const timeIsBooked = (time) => {
-      const selectedClassName = selectedClass.value.name;
-      const selectedDateValue = selectedDate.value;
+    // const timeIsBooked = (time) => {
+    //   const selectedClassName = selectedClass.value.name;
+    //   const selectedDateValue = selectedDate.value;
 
-      const classesStore = useClassesStore();
-      const bookedClasses = classesStore.getBookedClasses;
+    //   const classesStore = useClassesStore();
+    //   const bookedClasses = classesStore.getBookedClasses;
 
-      for (const item in bookedClasses) {
-        const bookedClass = bookedClasses[item];
-        if (
-          bookedClass.className === selectedClassName &&
-          bookedClass.selectedDate === selectedDateValue &&
-          isTimeInRange(time, bookedClass.selectedTime, bookedClass.duration)
-        ) {
-          return true;
-        }
-      }
+    //   for (const item in bookedClasses) {
+    //     const bookedClass = bookedClasses[item];
+    //     if (
+    //       bookedClass.className === selectedClassName &&
+    //       bookedClass.selectedDate === selectedDateValue &&
+    //       isTimeInRange(time, bookedClass.selectedTime, bookedClass.duration)
+    //     ) {
+    //       return true;
+    //     }
+    //   }
 
-      return false;
-    };
+    //   return false;
+    // };
 
-    const isTimeInRange = (time, startTime, duration) => {
-      const [startHour, startMinute] = startTime.split(":").map(Number);
-      const [checkHour, checkMinute] = time.split(":").map(Number);
+    // const isTimeInRange = (time, startTime, duration) => {
+    //   const [startHour, startMinute] = startTime.split(":").map(Number);
+    //   const [checkHour, checkMinute] = time.split(":").map(Number);
 
-      const startTimeMinutes = startHour * 60 + startMinute;
-      const endTimeMinutes = startTimeMinutes + duration;
-      const checkTimeMinutes = checkHour * 60 + checkMinute;
+    //   const startTimeMinutes = startHour * 60 + startMinute;
+    //   const endTimeMinutes = startTimeMinutes + duration;
+    //   const checkTimeMinutes = checkHour * 60 + checkMinute;
 
-      return (
-        checkTimeMinutes >= startTimeMinutes &&
-        checkTimeMinutes < endTimeMinutes
-      );
-    };
+    //   return (
+    //     checkTimeMinutes >= startTimeMinutes &&
+    //     checkTimeMinutes < endTimeMinutes
+    //   );
+    // };
     // --------------------------------------------------------------------------------------------------------------------------------------------------------
-    const isFormInvalid = computed(() => {
-      return isAlreadyBooked;
+    // const isFormInvalid = computed(() => {
+    //   return isAlreadyBooked;
+    // });
+    const isFormEmpty = computed(() => {
+      return (
+        !selectedClass.value ||
+        !selectedDate.value ||
+        !selectedTime.value ||
+        !firstName.value ||
+        !lastName.value ||
+        !phone.value ||
+        !email.value
+      );
     });
 
     // const confirmBooking = async () => {
@@ -353,16 +478,13 @@ export default {
 
       // Save the booking details to a collection or store as needed
       try {
-        const response = await fetch(
-          "https://cautious-goldfish-44j4rv5xwv5hg66-3000.app.github.dev/classes/booking",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(combinedBookingDetails),
-          }
-        );
+        const response = await fetch("http://localhost:3000/classes/booking", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(combinedBookingDetails),
+        });
 
         if (response.ok) {
           bookingConfirmed.value = true;
@@ -396,8 +518,9 @@ export default {
       isAlreadyBooked,
       checkBookingAvailability,
       handleDropdownChange,
-      isFormInvalid,
+      // isFormInvalid,
       timeIsBooked,
+      isFormEmpty,
     };
   },
 };

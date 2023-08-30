@@ -15,7 +15,7 @@
       <input id="email" v-model="email" required />
     </div>
 
-    <button @click="confirmBooking" :disabled="isFormInvalid">
+    <button @click="confirmBooking" :disabled="isFormEmpty">
       Confirm Booking
     </button>
 
@@ -44,6 +44,11 @@ export default {
       email: "",
     };
   },
+  computed: {
+    isFormEmpty() {
+      return !this.firstName || !this.lastName || !this.phone || !this.email;
+    },
+  },
   methods: {
     confirmBooking() {
       // const studentInfo = {
@@ -60,14 +65,15 @@ export default {
       //   selectedDate: this.dateTimes.dateTimes,
       //   selectedTime: this.dateTimes.dateTimes[0],
       // };
-
+      if (!this.isFormEmpty) {
+        this.$emit("booking-confirmed", {
+          firstName: this.firstName,
+          lastName: this.lastName,
+          phone: this.phone,
+          email: this.email,
+        });
+      }
       // Emit an event to the parent component with booking details
-      this.$emit("booking-confirmed", {
-        firstName: this.firstName,
-        lastName: this.lastName,
-        phone: this.phone,
-        email: this.email,
-      });
     },
   },
 };

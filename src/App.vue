@@ -19,9 +19,7 @@ export default {
   setup() {
     const fetchBookedClasses = async () => {
       try {
-        const response = await fetch(
-          "https://cautious-goldfish-44j4rv5xwv5hg66-3000.app.github.dev/services/booked"
-        );
+        const response = await fetch("http://localhost:3000/services/booked");
         if (response.ok) {
           const bookedClass = await response.json();
           // bookedClasses.value = bookedClass; // Store fetched booked classes

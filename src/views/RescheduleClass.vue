@@ -2,16 +2,19 @@
   <div class="about">
     <h1>Reschedule My Class</h1>
     <StudentBookedClass />
+    <ReschedulingClass />
   </div>
 </template>
 
 <script>
 import { useClassesStore } from "@/store/classes.js";
 import StudentBookedClass from "@/components/StudentBookedClass.vue";
+import ReschedulingClass from "@/components/ReschedulingClass.vue";
 export default {
   name: "RescheduleClass",
   components: {
     StudentBookedClass,
+    ReschedulingClass,
   },
   data() {
     return {
@@ -39,9 +42,7 @@ export default {
     // this.availableClasses = [];
 
     // Rescheduling store happening here
-    fetch(
-      "https://cautious-goldfish-44j4rv5xwv5hg66-3000.app.github.dev/classes/booking/bookedclasses"
-    )
+    fetch("http://localhost:3000/classes/booking/bookedclasses")
       .then((response) => response.json())
       .then((rescheduledClasses) => {
         const classesStore = useClassesStore();

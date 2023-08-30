@@ -16,13 +16,13 @@
       <button @click="editBooking(student)">Edit</button>
       <hr />
     </div>
+    <EditFormBookedClass
+      v-if="selectedStudent"
+      :student="selectedStudent"
+      @save="updateStudentClass"
+      @cancel="cancelEdit"
+    />
   </div>
-  <EditFormBookedClass
-    v-if="selectedStudent"
-    :student="selectedStudent"
-    @save="updateStudentClass"
-    @cancel="selectedStudent = null"
-  />
 </template>
 
 <script>
@@ -36,45 +36,30 @@ export default {
     EditFormBookedClass,
   },
   setup() {
-    const bookedClass = ref([]);
-    const editableFields = ref({});
     const store = useClassesStore();
-    bookedClass.value = store.getBookedClasses;
-    console.log("bookedclass", bookedClass.value);
+    const bookedClass = ref(store.getBookedClasses);
+    const selectedStudent = ref(null);
 
-    const cancelClass = (student) => {
-      console.log("Canceling class for:", student);
+    const editBooking = (bookingDetails) => {
+      selectedStudent.value = bookingDetails;
     };
 
-    const editField = (studentId) => {
-      if (!editableFields.value[studentId]) {
-        editableFields.value[studentId] = {};
-      }
-      for (const field in bookedClass.value[0][studentId]) {
-        editableFields.value[studentId][field] = true;
-      }
+    const updateStudentClass = async (updatedInfo) => {
+      await store.updateBookedClass(updatedInfo);
+      selectedStudent.value = null;
     };
 
-    const getEditableField = (student, field, studentId) => {
-      if (
-        editableFields.value[studentId] &&
-        editableFields.value[studentId][field]
-      ) {
-        return student[field];
-      }
+    const cancelEdit = () => {
+      selectedStudent.value = null;
     };
 
     return {
       bookedClass,
-      cancelClass,
-      editField,
-      getEditableField,
+      selectedStudent,
+      editBooking,
+      updateStudentClass,
+      cancelEdit,
     };
-  },
-  methods: {
-    editBooking(bookingDetails) {
-      this.$emit("edit-booking", bookingDetails);
-    },
   },
 };
 </script>
