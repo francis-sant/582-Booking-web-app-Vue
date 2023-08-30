@@ -35,18 +35,43 @@ export default {
   components: {
     EditFormBookedClass,
   },
+
   setup() {
     const store = useClassesStore();
     const bookedClass = ref(store.getBookedClasses);
     const selectedStudent = ref(null);
+
+    // async function updateBookedClassApi(updatedStudent) {
+    //   try {
+    //     const response = await fetch(
+    //       `http://localhost:3000/classes/booking/${updatedStudent._id}`,
+    //       {
+    //         method: "PUT",
+    //         headers: {
+    //           "Content-Type": "application/json",
+    //         },
+    //         body: JSON.stringify(updatedStudent),
+    //       }
+    //     );
+
+    //     return response.ok;
+    //   } catch (error) {
+    //     console.error("An error occurred:", error);
+    //     return false;
+    //   }
+    // }
 
     const editBooking = (bookingDetails) => {
       selectedStudent.value = bookingDetails;
     };
 
     const updateStudentClass = async (updatedInfo) => {
-      await store.updateBookedClass(updatedInfo);
-      selectedStudent.value = null;
+      const success = await store.updateBookedClass(updatedInfo);
+      if (success) {
+        selectedStudent.value = null;
+      } else {
+        console.error("Error updating booked class");
+      }
     };
 
     const cancelEdit = () => {

@@ -9,16 +9,19 @@
 
       <select id="date" v-model="editableStudent.selectedDate"></select>
 
-      <button type="submit">Save</button>
+      <button type="submit" @click="handleSubmit">Save</button>
       <button type="button" @click="cancelEdit">Cancel</button>
     </form>
   </div>
+  {{ editableStudent._id }}
 </template>
 
 <script>
 export default {
+  emits: ["save", "cancel"],
   props: {
     student: Object,
+    selectedStudent: Object,
   },
   data() {
     return {
@@ -27,30 +30,36 @@ export default {
   },
   methods: {
     async handleSubmit() {
-      const updatedStudent = {
-        _id: this.editableStudent._id,
-        firstName: this.editableStudent.firstName,
-        email: this.editableStudent.email,
-        className: this.editableStudent.className,
-        selectedDate: this.editableStudent.selectedDate,
-        // Add other fields as needed
-      };
+      try {
+        const updatedStudent = {
+          _id: this.editableStudent._id,
+          firstName: this.editableStudent.firstName,
+          email: this.editableStudent.email,
+          className: this.editableStudent.className,
+          selectedDate: this.editableStudent.selectedDate,
+          // Add other fields as needed
+        };
 
-      const response = await fetch(
-        `http://localhost:3000/classes/booking/${updatedStudent._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updatedStudent),
+        const response = await fetch(
+          `http://localhost:3000/classes/booking/${updatedStudent._id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedStudent),
+          }
+        );
+
+        if (response.ok) {
+          this.$emit("save", updatedStudent);
+        } else {
+          // Handle error if needed
+          console.error("Error updating student:", response.statusText);
         }
-      );
-
-      if (response.ok) {
-        this.$emit("save", updatedStudent);
-      } else {
-        // Handle error if needed
+      } catch (error) {
+        // Handle any other errors that might occur
+        console.error("An error occurred:", error);
       }
     },
     cancelEdit() {

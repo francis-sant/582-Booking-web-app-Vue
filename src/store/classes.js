@@ -24,6 +24,21 @@ export const useClassesStore = defineStore("classes", {
     },
   },
 
+  async updateBookedClass(updatedStudent, updateBookedClassApi) {
+    const success = await updateBookedClassApi(updatedStudent);
+
+    if (success) {
+      const updatedStudentIndex = this.bookedClasses.findIndex(
+        (student) => student._id === updatedStudent._id
+      );
+
+      if (updatedStudentIndex !== -1) {
+        this.bookedClasses[updatedStudentIndex] = updatedStudent;
+      }
+    } else {
+      console.error("Error updating booked class");
+    }
+  },
   // async updateBookedClass(updatedStudent) {
   //   const success = await updateBookedClassApi(updatedStudent);
 

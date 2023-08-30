@@ -134,7 +134,7 @@ app.post("/classes/booking", async (req, res) => {
   }
 });
 
-app.put("/classes/booking/:id", async (req, res) => {
+app.post("/classes/booking/:id", async (req, res) => {
   const client = new MongoClient(uri);
 
   try {
@@ -144,7 +144,7 @@ app.put("/classes/booking/:id", async (req, res) => {
 
     const collection = database.collection("bookedClasses");
     // const result = await collection.find({}).toArray();
-    const result = await collection.find(req.body);
+    const result = await collection.updateOne(req.body);
 
     console.log(result);
     res.json(result);
