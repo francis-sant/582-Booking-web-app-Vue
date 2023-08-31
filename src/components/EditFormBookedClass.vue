@@ -26,10 +26,12 @@ export default {
 
     const handleSubmit = () => {
       emit("save", editableStudent.value);
+      console.log("editablevalue", editableStudent.value);
     };
 
     const cancelEdit = () => {
       emit("cancel");
+      console.log("cancel");
     };
 
     return {

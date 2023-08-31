@@ -1,9 +1,15 @@
 <template>
   <nav>
     <router-link to="/">Home</router-link> |
-    <router-link to="/classes">Book My Class</router-link> |
-    <router-link to="/services">Insert my Services</router-link> |
-    <router-link to="/reschedule">Reschedule My Class</router-link> |
+
+    <template v-if="isInstructor">
+      <router-link to="/instructor">Insert My Services</router-link> |
+      <router-link to="/reschedule">Reschedule My Class</router-link> |
+    </template>
+    <template v-else-if="isStudent">
+      <router-link to="/student/classes">Available Classes</router-link> |
+      <router-link to="/student">Book My Class</router-link> |
+    </template>
   </nav>
   <router-view />
 </template>
@@ -22,7 +28,7 @@ export default {
         const response = await fetch("http://localhost:3000/services/booked");
         if (response.ok) {
           const bookedClass = await response.json();
-          // bookedClasses.value = bookedClass; // Store fetched booked classes
+
           const classesStore = useClassesStore();
           classesStore.setAvClasses(bookedClass);
 
@@ -35,11 +41,20 @@ export default {
         console.error("Error while fetching booked classes:", error);
       }
     };
+
+    // const isInstructor = {
+    //   // Access the route's meta to determine if the user is an instructor
+    //   const currentRoute = this.$router.currentRoute.value;
+    //   return currentRoute.meta.role === "instructor";
+    // });
     // --------------------------------------------------------------------------------------------------------------------------------------------------------
     onMounted(async () => {
-      // choosing a default to be already available in the menu offer
       fetchBookedClasses();
     });
+
+    // return {
+    //   isInstructor,
+    // };
   },
 };
 </script>

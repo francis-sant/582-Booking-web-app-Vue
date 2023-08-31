@@ -2,7 +2,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 // this allows the interaction with Mongo db
-const { MongoClient } = require("mongodb");
+const { MongoClient, ObjectId } = require("mongodb");
 
 //app will initialize express in and which port will start
 const app = express();
@@ -19,27 +19,28 @@ app.use(bodyParser.json());
 var cors = require("cors");
 app.use(cors());
 
-app.post("/", async (req, res) => {
+// ---------------------------------------------------------------------------------------------
+app.delete("/services/booked/:id", async (req, res) => {
   const client = new MongoClient(uri);
 
   try {
     await client.connect();
     const database = client.db("mongodemo");
-    const student = database.collection("services");
-
-    const result = await student.insertOne(req.body);
-
-    console.log(result);
-    res.send("Data inserted successfully.");
+    const collection = database.collection("services");
+    const result = await collection.deleteOne({ id: req.body.id });
+    res.send(result);
   } catch (err) {
-    console.error("Error inserting data:", err);
-    res.status(500).json({ error: "An error occurred while inserting data." });
+    //The default error handler
+    console.error("Error retrieving data:", err);
+
+    res.status(500).json({ error: "An error occurred while retrieving data." });
   } finally {
     await client.close();
   }
 });
 
-app.get("/services/booked", async (req, res) => {
+// ---------------------------------------------------------------------------------------------
+app.get("/instructor/services/booked/", async (req, res) => {
   const client = new MongoClient(uri);
 
   try {
@@ -48,6 +49,7 @@ app.get("/services/booked", async (req, res) => {
     // const collection = database.collection("student");
 
     const collection = database.collection("services");
+
     const result = await collection.find({}).toArray();
     // const result = await collection.insertOne(req.params);
 
@@ -62,8 +64,8 @@ app.get("/services/booked", async (req, res) => {
     await client.close();
   }
 });
-
-app.post("/services", async (req, res) => {
+// ---------------------------------------------------------------------------------------------
+app.post("/instructor/services", async (req, res) => {
   const client = new MongoClient(uri);
 
   try {
@@ -87,9 +89,35 @@ app.post("/services", async (req, res) => {
     await client.close();
   }
 });
+// ---------------------------------------------------------------------------------------------
+app.get("/instructor", async (req, res) => {
+  const client = new MongoClient(uri);
+
+  try {
+    await client.connect();
+    const database = client.db("bookingApp");
+    // const collection = database.collection("student");
+
+    const collection = database.collection("services");
+
+    const result = await collection.find({}).toArray();
+    // const result = await collection.insertOne(req.params);
+
+    console.log(result);
+    res.json(result);
+  } catch (err) {
+    //The default error handler
+    console.error("Error retrieving data:", err);
+
+    res.status(500).json({ error: "An error occurred while retrieving data." });
+  } finally {
+    await client.close();
+  }
+});
+// ---------------------------------------------------------------------------------------------
 
 //Read route-get request for the route
-app.get("/classes", async (req, res) => {
+app.get("/student/classes", async (req, res) => {
   const client = new MongoClient(uri);
 
   try {
@@ -111,8 +139,8 @@ app.get("/classes", async (req, res) => {
     await client.close();
   }
 });
-
-app.post("/classes/booking", async (req, res) => {
+// ---------------------------------------------------------------------------------------------
+app.post("/student/classes/booking", async (req, res) => {
   const client = new MongoClient(uri);
 
   try {
@@ -136,73 +164,28 @@ app.post("/classes/booking", async (req, res) => {
   }
 });
 
-// app.put("/classes/booking", async (req, res) => {
-//   const client = new MongoClient(uri);
+// ---------------------------------------------------------------------------------------------
 
-//   try {
-//     await client.connect();
-//     const database = client.db("bookingApp");
-//     // const collection = database.collection("student");
-
-//     const collection = database.collection("bookedClasses");
-
-//     const updatedData = {
-//       // Keep the same information from the request body
-//       firstName: req.body.firstName,
-//       lastName: req.body.lastName,
-//       phone: req.body.phone,
-//       email: req.body.email,
-//       className: req.body.className,
-//       classType: req.body.classType,
-//       duration: req.body.duration,
-//       selectedDate: req.body.selectedDate,
-//       selectedTime: req.body.selectedTime,
-//       instructor: req.body.instructor,
-//       // Add other fields as needed
-//     };
-
-//     const result = await collection.updateOne(
-//       { _id: ObjectId(req.params.id) }, // Assuming you're using ObjectId for the _id field
-//       { $set: updatedData }
-//     );
-//     res.send(result);
-//   } catch (err) {
-//     //The default error handler
-//     console.error("Error retrieving data:", err);
-
-//     res.status(500).json({ error: "An error occurred while retrieving data." });
-//   } finally {
-//     await client.close();
-//   }
-// });
-// ... rest of your code ...
-
-app.put("/classes/booking", async (req, res) => {
+app.put("/student/classes/booking/rescheduled/:id", async (req, res) => {
   const client = new MongoClient(uri);
 
   try {
     await client.connect();
     const database = client.db("bookingApp");
     const collection = database.collection("bookedClasses");
+    const { id } = req.params;
+    const updatedStudentData = req.body;
 
-    const result = await collection.updateOne(
-      { id: req.body._id },
-      {
-        $set: {
-          firstName: req.body.firstName,
-          lastName: req.body.lastName,
-          phone: req.body.phone,
-          email: req.body.email,
-          className: req.body.className,
-          classType: req.body.classType,
-          duration: req.body.duration,
-          selectedDate: req.body.selectedDate,
-          selectedTime: req.body.selectedTime,
-          instructor: req.body.instructor,
-        },
-      }
+    // Set isRescheduled to true
+    updatedStudentData.isRescheduled = true;
+
+    const updatedStudent = await collection.findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      { $set: updatedStudentData },
+      { returnOriginal: false }
     );
-    res.send(result);
+
+    res.send(updatedStudent);
   } catch (err) {
     console.error("Error updating data:", err);
     res.status(500).json({ error: "An error occurred while updating data." });
@@ -210,8 +193,8 @@ app.put("/classes/booking", async (req, res) => {
     await client.close();
   }
 });
-
-app.get("/classes/booking/bookedclasses", async (req, res) => {
+// ---------------------------------------------------------------------------------------------
+app.get("/student/classes/booking/bookedclasses", async (req, res) => {
   const client = new MongoClient(uri);
 
   try {
@@ -234,7 +217,7 @@ app.get("/classes/booking/bookedclasses", async (req, res) => {
     await client.close();
   }
 });
-
+// ---------------------------------------------------------------------------------------------
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });

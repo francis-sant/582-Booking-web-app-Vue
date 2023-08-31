@@ -26,16 +26,16 @@
     </fieldset>
 
     <label for="type">Duration - in minutes</label>
-    <input type="text" v-model="duration" required />
+    <input type="number" v-model="duration" required />
 
     <!-- //add fields for breaks -->
     <label for="type">Breaks - in minutes</label>
-    <input type="text" v-model="breaks" required />
+    <input type="number" v-model="breaks" required />
 
     <label for="price">Price</label>
     <input type="number" v-model="price" required />
 
-    <button type="submit">Adicionar Minha Aula</button>
+    <button type="submit">Add My Service</button>
 
     <div v-if="successMessage">
       {{ successMessage }}
@@ -48,17 +48,11 @@
 
 <script>
 import { ref } from "vue";
-import { useTeacherStore } from "@/store/teacher.js";
 import { useRouter } from "vue-router";
 
 export default {
   name: "TeacherScheduleForm",
 
-  computed: {
-    selectedDaysCount() {
-      return this.selectedDays.length;
-    },
-  },
   setup() {
     const instructor = ref("");
     const name = ref("");
@@ -70,7 +64,6 @@ export default {
     const failMessage = ref("");
     const duration = ref("");
     const breaks = ref("");
-
     const dateTimes = ref([{ date: "", startTime: "", endTime: "" }]);
 
     const addDateTime = () => {
@@ -106,12 +99,9 @@ export default {
         });
         console.log(schedule);
 
-        const teacherstore = useTeacherStore();
-        teacherstore.setAvClasses(schedule);
         successMessage.value = "Service Added Sucessfully!";
-
+        router.push("/services/booked");
         clearForm();
-        router.push("/services");
       } catch (error) {
         failMessage.value = "Your Request Failed!" + error;
         console.error(error);
@@ -136,7 +126,6 @@ export default {
       modality,
       price,
       selectedDays,
-      // isFormSubmitted,
       submitSchedule,
       successMessage,
       failMessage,

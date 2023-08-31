@@ -1,6 +1,34 @@
 <template>
   <div class="about">
     <h1>Reschedule My Class</h1>
+    <StudentBookedClass :bookedClasses="bookedClass[0]" />
+  </div>
+</template>
+
+<script>
+import { useClassesStore } from "@/store/classes.js";
+import StudentBookedClass from "@/components/StudentBookedClass.vue";
+import { computed } from "vue";
+
+export default {
+  name: "RescheduleClass",
+  components: {
+    StudentBookedClass,
+  },
+  setup() {
+    const store = useClassesStore();
+    const bookedClass = computed(() => store.getBookedClasses);
+
+    return {
+      bookedClass,
+    };
+  },
+};
+</script>
+
+<!-- <template>
+  <div class="about">
+    <h1>Reschedule My Class</h1>
     <StudentBookedClass @edit-booking="editBooking" />
   </div>
 </template>
@@ -43,8 +71,8 @@ export default {
         const classesStore = useClassesStore();
         classesStore.setRescheduled(rescheduledClasses);
         this.availableClasses = [rescheduledClasses];
-        console.log("rescheduledClasses", this.availableClasses); // Set the data after fetching
+        console.log("rescheduledClasses", this.availableClasses);
       });
   },
 };
-</script>
+</script> -->

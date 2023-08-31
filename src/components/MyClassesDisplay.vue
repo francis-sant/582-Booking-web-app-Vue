@@ -1,10 +1,10 @@
 <template>
   <div class="titulo">
-    <div v-for="item of myClasses" :key="item._id" class="classesDisplay">
+    <div v-for="(item, index) of myClasses" :key="index" class="classesDisplay">
       <div class="schedule">
         <h3>Instructor: {{ item.instructor }}</h3>
-        <p>Tipo de Aula: {{ item.type }}</p>
-        <p>Nome do Tipo de Aula: {{ item.name }}</p>
+        <p>Type of Class: {{ item.type }}</p>
+        <p>Name of the Type of Class: {{ item.name }}</p>
         <p>Modality: {{ item.modality }}</p>
         <p>Duration: {{ item.duration }} minutes</p>
 
@@ -15,7 +15,7 @@
           </li>
         </ul>
 
-        <p>Preço: R$ {{ item.price }}</p>
+        <p>Price: R$ {{ item.price }}</p>
       </div>
     </div>
   </div>
@@ -23,19 +23,16 @@
 
 <script>
 import { useTeacherStore } from "@/store/teacher.js";
-import { computed } from "vue";
+// import { computed } from "vue";
 
 export default {
-  setup() {
-    // const myClasses = ref([]);
+  name: "MyClassesDisplay",
 
-    const store = useTeacherStore();
-    const myClasses = computed(() => store.getAvClasses);
-    // myClasses.value = teacher.value;
-
-    return {
-      myClasses,
-    };
+  computed: {
+    myClasses() {
+      const store = useTeacherStore();
+      return store.getAvClasses;
+    },
   },
 };
 </script>

@@ -9,7 +9,7 @@
       <input id="lastName" v-model="lastName" required />
 
       <label for="phone">Phone:</label>
-      <input id="phone" v-model="phone" required />
+      <input id="phone" type="number" v-model="phone" required />
 
       <label for="email">Email:</label>
       <input id="email" v-model="email" required />
@@ -18,13 +18,6 @@
     <button @click="confirmBooking" :disabled="isFormEmpty">
       Confirm Booking
     </button>
-
-    <!-- <div class="personalConfirmation">
-      <h2>Confirmation</h2>
-      <p>FullName: {{ firstName }} {{ lastName }}</p>
-      <p>Phone: {{ phone }}</p>
-      <p>Email: {{ email }}</p>
-    </div> -->
   </div>
 </template>
 
@@ -51,20 +44,6 @@ export default {
   },
   methods: {
     confirmBooking() {
-      // const studentInfo = {
-      //   firstName: this.firstName,
-      //   lastName: this.lastName,
-      //   phone: this.phone,
-      //   email: this.email,
-      // };
-
-      // const classDetails = {
-      //   className: this.selectedClass.name,
-      //   classType: this.selectedClass.type,
-      //   duration: this.selectedClass.duration,
-      //   selectedDate: this.dateTimes.dateTimes,
-      //   selectedTime: this.dateTimes.dateTimes[0],
-      // };
       if (!this.isFormEmpty) {
         this.$emit("booking-confirmed", {
           firstName: this.firstName,
@@ -73,7 +52,6 @@ export default {
           email: this.email,
         });
       }
-      // Emit an event to the parent component with booking details
     },
   },
 };

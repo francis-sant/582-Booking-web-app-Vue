@@ -13,22 +13,22 @@
       <p>Selected Date: {{ student.selectedDate }}</p>
       <p>Selected Time: {{ student.selectedTime }}</p>
 
-      <button @click="editBooking(student, true)">Edit</button>
+      <button @click="editBooking(student)">Edit</button>
       <hr />
+
+      <EditFormBookedClass
+        v-if="selectedStudent === student"
+        :student="student"
+        @save="updateStudentClass"
+        @cancel="cancelEdit"
+      />
     </div>
-    <EditFormBookedClass
-      v-if="selectedStudent"
-      :student="selectedStudent"
-      @save="updateStudentClass"
-      @cancel="cancelEdit"
-    />
   </div>
 </template>
 
 <script>
 import { useClassesStore } from "@/store/classes.js";
 import EditFormBookedClass from "@/components/EditFormBookedClass.vue";
-
 import { ref } from "vue";
 
 export default {
@@ -48,38 +48,47 @@ export default {
       selectedStudent.value = null;
     };
 
-    return {
-      bookedClass,
-      selectedStudent,
-      editBooking,
-      cancelEdit,
-    };
-  },
-  methods: {
-    async updateStudentClass(updatedStudent) {
+    const updateStudentClass = async (updatedStudent) => {
       try {
+        const { _id, ...updatedStudentDataWithoutId } = updatedStudent;
+
         const response = await fetch(
-          `http://localhost:3000/classes/booking`, // Assuming you have an _id field in your student object
+          `http://localhost:3000/classes/booking/rescheduled/${_id}`,
           {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify(updatedStudent),
+            body: JSON.stringify(updatedStudentDataWithoutId),
           }
         );
 
         if (response.ok) {
-          // Update store or necessary state
-          console.log(updatedStudent);
-          this.selectedStudent = null;
+          // Update the bookedClass array with the updated student information
+          const updatedStudentIndex = bookedClass.value[0].findIndex(
+            (student) => student._id === _id
+          );
+
+          if (updatedStudentIndex !== -1) {
+            bookedClass.value[0][updatedStudentIndex] = updatedStudent;
+          }
+
+          selectedStudent.value = null; // Clear the selected student after updating
         } else {
           console.error("Error updating student:", response.statusText);
         }
       } catch (error) {
         console.error("An error occurred:", error);
-      } // Remove the comma from here
-    },
+      }
+    };
+
+    return {
+      bookedClass,
+      selectedStudent,
+      editBooking,
+      cancelEdit,
+      updateStudentClass,
+    };
   },
 };
 </script>

@@ -30,12 +30,7 @@
       v-model="selectedTime"
       @change="handleDropdownChange('time', selectedTime)"
     >
-      <option
-        v-for="(time, index) in availableTime"
-        :key="index"
-        :value="time"
-        :disabled="isAlreadyBooked && time === selectedTime"
-      >
+      <option v-for="(time, index) in availableTime" :key="index" :value="time">
         {{ time }}
       </option>
     </select>
@@ -48,7 +43,6 @@ export default {
     availableClasses: Object,
     availableDate: Array,
     availableTime: Array,
-    isAlreadyBooked: Boolean,
   },
   data() {
     return {
@@ -65,6 +59,4 @@ export default {
 };
 </script>
 
-<style>
-/* Add your dropdown styling here */
-</style>
+<style></style>

@@ -39,6 +39,16 @@ const routes = [
       },
     ],
   },
+  {
+    path: "/instructor",
+    component: TeacherClasses,
+    meta: { role: "instructor" },
+  },
+  {
+    path: "/student",
+    component: ClassesAvailable,
+    meta: { role: "student" },
+  },
 
   {
     path: "/reschedule",

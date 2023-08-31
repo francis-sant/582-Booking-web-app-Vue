@@ -137,13 +137,13 @@ export function useBookingLogic() {
       ) {
         validationMessage.value =
           "There is no spot available at this time anymore, choose another time";
-        isAlreadyBookedValue = true; // Update the value here
+        isAlreadyBookedValue = true;
         console.log("isAlreadyBooked", isAlreadyBookedValue);
       }
     }
 
     if (isAlreadyBookedValue) {
-      isAlreadyBooked.value = true; // Instead of isAlreadyBooked.value = ref(true);
+      isAlreadyBooked.value = true;
 
       return {
         isAlreadyBooked,
@@ -151,7 +151,7 @@ export function useBookingLogic() {
         validationMessage,
       };
     } else {
-      isAlreadyBooked.value = false; // Instead of isAlreadyBooked.value = ref(true);
+      isAlreadyBooked.value = false;
 
       return { isAlreadyBooked: false, validationMessage: "" };
     }
