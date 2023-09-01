@@ -47,7 +47,7 @@
 <script>
 import { useClassesStore } from "@/store/classes.js";
 import { ref, computed, onMounted } from "vue";
-import { useRouter } from "vue-router";
+// import { useRouter } from "vue-router";
 import PersonalInfo from "./PersonalInfo.vue";
 import Dropdown from "@/components/DropDown.vue";
 import { useBookingLogic } from "@/composables/bookingLogic.js"; // Import the composable
@@ -87,7 +87,7 @@ export default {
       email: "",
     });
 
-    const router = useRouter();
+    // const router = useRouter();
     selectedClass.value = availableClasses.value[0];
     onMounted(async () => {
       selectedClass.value = availableClasses.value[0];
@@ -169,7 +169,7 @@ export default {
 
       // Save the booking details to a collection in the database
       try {
-        const response = await fetch("http://localhost:3000/classes/booking", {
+        const response = await fetch("http://localhost:3000/student/booking", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -180,7 +180,8 @@ export default {
         if (response.ok) {
           bookingConfirmed.value = true;
           bookingDetails.value = combinedBookingDetails;
-          router.push("/classes");
+          // router.push("/student/booking");
+          fetchBookedClasses();
         } else {
           console.error("Booking request failed:", response.statusText);
         }

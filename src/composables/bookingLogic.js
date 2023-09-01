@@ -11,9 +11,7 @@ export function useBookingLogic() {
   // Fetch booked classes from the server
   async function fetchBookedClasses() {
     try {
-      const response = await fetch(
-        "http://localhost:3000/classes/booking/bookedclasses"
-      );
+      const response = await fetch("http://localhost:3000/student/dashboard");
       if (response.ok) {
         const bookedClass = await response.json();
         // bookedClasses.value = bookedClass; // Store fetched booked classes
@@ -81,7 +79,7 @@ export function useBookingLogic() {
           let startTime = selectedDateTime.startTime;
           let endTime = selectedDateTime.endTime;
 
-          const classDurationMinutes = selectedClass.duration;
+          // const classDurationMinutes = selectedClass.duration;
           const startHour = parseInt(startTime);
           const endHour = parseInt(endTime);
 
@@ -92,8 +90,8 @@ export function useBookingLogic() {
             let availableMinute = 0;
 
             // Check if the hour is equal to the end hour
-            if (hour === endHour && classDurationMinutes < 60) {
-              availableMinute = 60 - classDurationMinutes;
+            if (hour === endHour && startHour < 60) {
+              availableMinute = 0;
             }
 
             // Construct the available time slot

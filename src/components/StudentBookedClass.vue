@@ -1,27 +1,30 @@
 <template>
   <div>
     <h2>Student Class Dashboard</h2>
-    <div
-      v-for="student in bookedClass[0]"
-      :key="student._id"
-      class="student-details"
-    >
-      <h3>My Classes Information</h3>
-      <p>First Name: {{ student.firstName }}</p>
-      <p>Email: {{ student.email }}</p>
-      <p>Class Name: {{ student.className }}</p>
-      <p>Selected Date: {{ student.selectedDate }}</p>
-      <p>Selected Time: {{ student.selectedTime }}</p>
+    <div class="studentsinfo">
+      <div
+        v-for="student in bookedClass[0]"
+        :key="student._id"
+        class="studentdetails"
+      >
+        <h3>My Classes Information</h3>
+        <p>First Name: {{ student.firstName }}</p>
+        <p>Email: {{ student.email }}</p>
+        <p>Class Name: {{ student.className }}</p>
+        <p>Selected Date: {{ student.selectedDate }}</p>
+        <p>Selected Time: {{ student.selectedTime }}</p>
 
-      <button @click="editBooking(student)">Edit</button>
-      <hr />
+        <button @click="editBooking(student)">Reschedule My Class</button>
 
-      <EditFormBookedClass
-        v-if="selectedStudent === student"
-        :student="student"
-        @save="updateStudentClass"
-        @cancel="cancelEdit"
-      />
+        <EditFormBookedClass
+          :availableClasses="availableClasses"
+          :bookedClasses="bookedClass"
+          v-if="selectedStudent === student"
+          :student="student"
+          @save="updateStudentClass"
+          @cancel="cancelEdit"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -38,6 +41,7 @@ export default {
   setup() {
     const store = useClassesStore();
     const bookedClass = ref(store.getBookedClasses);
+    const availableClasses = ref(store.getAvClasses);
     const selectedStudent = ref(null);
 
     const editBooking = (bookingDetails) => {
@@ -88,7 +92,10 @@ export default {
       editBooking,
       cancelEdit,
       updateStudentClass,
+      availableClasses,
     };
   },
 };
 </script>
+
+<style lang="scss"></style>

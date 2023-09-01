@@ -1,11 +1,13 @@
 <template>
-  <div>
+  <div class="editForm">
     <h3>Edit Class Information</h3>
     <form @submit.prevent="handleSubmit">
       <input v-model="editableStudent.firstName" />
       <input v-model="editableStudent.email" />
-      <input v-model="editableStudent.className" />
-      <input v-model="editableStudent.selectedDate" />
+
+      <input v-model="editableStudent.selectedTime" />
+
+      <input v-model="editableStudent.selectedDate" type="date" />
 
       <button type="submit">Save</button>
       <button type="button" @click="cancelEdit">Cancel</button>

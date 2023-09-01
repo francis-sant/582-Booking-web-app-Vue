@@ -1,17 +1,11 @@
 <template>
   <div>
     <nav>
-      <router-link to="/instructor/services">Insert My Services</router-link>
-      <router-link to="/instructor/services/booked"
-        >Booked Services</router-link
-      >
+      <!-- <router-view name="menu" /> -->
+      <!-- <router-link to="/instructor">Home</router-link> | -->
+      <router-link to="/services/booked">My Services</router-link> |
+      <router-link to="/instructor/reschedule">Students Booked</router-link> |
     </nav>
     <router-view />
   </div>
 </template>
-
-<script>
-export default {
-  name: "InstructorPage",
-};
-</script>

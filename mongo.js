@@ -10,62 +10,60 @@ const port = 3000;
 
 // MongoDB connection URI
 const uri =
-  "mongodb+srv://francis-sant:JyDv3bbTdR0a2ijx@cluster0.tzdfzyh.mongodb.net/?retryWrites=true&w=majority";
-
-//it will parse the income request body into json for all requests
-app.use(bodyParser.json());
+  //it will parse the income request body into json for all requests
+  app.use(bodyParser.json());
 
 //use this when i install cors npm install cors --save
 var cors = require("cors");
 app.use(cors());
 
 // ---------------------------------------------------------------------------------------------
-app.delete("/services/booked/:id", async (req, res) => {
-  const client = new MongoClient(uri);
+// app.delete("/services/booked/:id", async (req, res) => {
+//   const client = new MongoClient(uri);
 
-  try {
-    await client.connect();
-    const database = client.db("mongodemo");
-    const collection = database.collection("services");
-    const result = await collection.deleteOne({ id: req.body.id });
-    res.send(result);
-  } catch (err) {
-    //The default error handler
-    console.error("Error retrieving data:", err);
+//   try {
+//     await client.connect();
+//     const database = client.db("mongodemo");
+//     const collection = database.collection("services");
+//     const result = await collection.deleteOne({ id: req.body.id });
+//     res.send(result);
+//   } catch (err) {
+//     //The default error handler
+//     console.error("Error retrieving data:", err);
 
-    res.status(500).json({ error: "An error occurred while retrieving data." });
-  } finally {
-    await client.close();
-  }
-});
+//     res.status(500).json({ error: "An error occurred while retrieving data." });
+//   } finally {
+//     await client.close();
+//   }
+// });
 
 // ---------------------------------------------------------------------------------------------
-app.get("/instructor/services/booked/", async (req, res) => {
-  const client = new MongoClient(uri);
+// app.get("/services/booked/", async (req, res) => {
+//   const client = new MongoClient(uri);
 
-  try {
-    await client.connect();
-    const database = client.db("bookingApp");
-    // const collection = database.collection("student");
+//   try {
+//     await client.connect();
+//     const database = client.db("bookingApp");
+//     // const collection = database.collection("student");
 
-    const collection = database.collection("services");
+//     const collection = database.collection("services");
 
-    const result = await collection.find({}).toArray();
-    // const result = await collection.insertOne(req.params);
+//     const result = await collection.find({}).toArray();
+//     // const result = await collection.insertOne(req.params);
 
-    console.log(result);
-    res.json(result);
-  } catch (err) {
-    //The default error handler
-    console.error("Error retrieving data:", err);
+//     console.log(result);
+//     res.json(result);
+//   } catch (err) {
+//     //The default error handler
+//     console.error("Error retrieving data:", err);
 
-    res.status(500).json({ error: "An error occurred while retrieving data." });
-  } finally {
-    await client.close();
-  }
-});
+//     res.status(500).json({ error: "An error occurred while retrieving data." });
+//   } finally {
+//     await client.close();
+//   }
+// });
 // ---------------------------------------------------------------------------------------------
-app.post("/instructor/services", async (req, res) => {
+app.post("/services/booked", async (req, res) => {
   const client = new MongoClient(uri);
 
   try {
@@ -90,7 +88,7 @@ app.post("/instructor/services", async (req, res) => {
   }
 });
 // ---------------------------------------------------------------------------------------------
-app.get("/instructor", async (req, res) => {
+app.get("/services", async (req, res) => {
   const client = new MongoClient(uri);
 
   try {
@@ -114,59 +112,10 @@ app.get("/instructor", async (req, res) => {
     await client.close();
   }
 });
-// ---------------------------------------------------------------------------------------------
-
-//Read route-get request for the route
-app.get("/student/classes", async (req, res) => {
-  const client = new MongoClient(uri);
-
-  try {
-    await client.connect();
-    const database = client.db("bookingApp");
-    // const collection = database.collection("student");
-    const collection = database.collection("services");
-    const result = await collection.find({}).toArray();
-    // const result = await collection.deleteMany(req.params);
-
-    console.log(result);
-    res.json(result);
-  } catch (err) {
-    //The default error handler
-    console.error("Error retrieving data:", err);
-
-    res.status(500).json({ error: "An error occurred while retrieving data." });
-  } finally {
-    await client.close();
-  }
-});
-// ---------------------------------------------------------------------------------------------
-app.post("/student/classes/booking", async (req, res) => {
-  const client = new MongoClient(uri);
-
-  try {
-    await client.connect();
-    const database = client.db("bookingApp");
-    // const collection = database.collection("student");
-
-    const collection = database.collection("bookedClasses");
-    // const result = await collection.find({}).toArray();
-    const result = await collection.insertOne(req.body);
-
-    console.log(result);
-    res.json(result);
-  } catch (err) {
-    //The default error handler
-    console.error("Error retrieving data:", err);
-
-    res.status(500).json({ error: "An error occurred while retrieving data." });
-  } finally {
-    await client.close();
-  }
-});
 
 // ---------------------------------------------------------------------------------------------
 
-app.put("/student/classes/booking/rescheduled/:id", async (req, res) => {
+app.put("/classes/booking/rescheduled/:id", async (req, res) => {
   const client = new MongoClient(uri);
 
   try {
@@ -193,8 +142,35 @@ app.put("/student/classes/booking/rescheduled/:id", async (req, res) => {
     await client.close();
   }
 });
-// ---------------------------------------------------------------------------------------------
-app.get("/student/classes/booking/bookedclasses", async (req, res) => {
+
+// --------------------------------------------------------------------------------------
+app.post("/student/booking", async (req, res) => {
+  const client = new MongoClient(uri);
+
+  try {
+    await client.connect();
+    const database = client.db("bookingApp");
+    // const collection = database.collection("student");
+
+    const collection = database.collection("bookedClasses");
+    // const result = await collection.find({}).toArray();
+    const result = await collection.insertOne(req.body);
+
+    console.log(result);
+    res.json(result);
+  } catch (err) {
+    //The default error handler
+    console.error("Error retrieving data:", err);
+
+    res.status(500).json({ error: "An error occurred while retrieving data." });
+  } finally {
+    await client.close();
+  }
+});
+// --------------------------------------------------------------------------------------
+
+// /classes/booking/bookedclasses
+app.get("/student/dashboard", async (req, res) => {
   const client = new MongoClient(uri);
 
   try {
@@ -217,7 +193,35 @@ app.get("/student/classes/booking/bookedclasses", async (req, res) => {
     await client.close();
   }
 });
+
+// --------------------------------------------------------------------------------------
+
+//Read route-get request for the route
+app.get("/student", async (req, res) => {
+  const client = new MongoClient(uri);
+
+  try {
+    await client.connect();
+    const database = client.db("bookingApp");
+    // const collection = database.collection("student");
+    const collection = database.collection("services");
+    const result = await collection.find({}).toArray();
+    // const result = await collection.deleteMany(req.params);
+
+    console.log(result);
+    res.json(result);
+  } catch (err) {
+    //The default error handler
+    console.error("Error retrieving data:", err);
+
+    res.status(500).json({ error: "An error occurred while retrieving data." });
+  } finally {
+    await client.close();
+  }
+});
+
 // ---------------------------------------------------------------------------------------------
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });

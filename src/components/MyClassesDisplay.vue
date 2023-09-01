@@ -1,5 +1,5 @@
 <template>
-  <div class="titulo">
+  <div class="myclassesdisplay">
     <div v-for="(item, index) of myClasses" :key="index" class="classesDisplay">
       <div class="schedule">
         <h3>Instructor: {{ item.instructor }}</h3>

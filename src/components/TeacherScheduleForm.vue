@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="submitSchedule">
+  <form class="insertForm" @submit.prevent="submitSchedule">
     <label for="teacher">Instructor Name:</label>
     <input type="text" v-model="instructor" required />
 
@@ -21,8 +21,8 @@
         <label>End Time:</label>
         <input type="time" v-model="dateTime.endTime" required />
         <button @click="removeDateTime(index)">Remove</button>
+        <button @click="addDateTime">Add Date and Time</button>
       </div>
-      <button @click="addDateTime">Add Date and Time</button>
     </fieldset>
 
     <label for="type">Duration - in minutes</label>
@@ -37,7 +37,7 @@
 
     <button type="submit">Add My Service</button>
 
-    <div v-if="successMessage">
+    <div class="successMessage" v-if="successMessage">
       {{ successMessage }}
     </div>
     <div v-else>
@@ -90,7 +90,7 @@ export default {
       };
 
       try {
-        await fetch("http://localhost:3000/services", {
+        await fetch("http://localhost:3000/services/booked", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -138,3 +138,37 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+.insertForm {
+  background: rgb(0, 86, 112);
+  padding: 20px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  margin: auto;
+  margin-bottom: 20px;
+  max-width: 645px;
+  font-size: 18px;
+  color: white;
+
+  label,
+  input {
+    margin-bottom: 10px;
+  }
+
+  fieldset {
+    margin-bottom: 10px;
+  }
+  .successMessage {
+    color: #22e14b;
+    background: #000000;
+    width: 50%;
+    margin: auto;
+    padding: 10px;
+    font-size: 20px;
+    font-weight: bold;
+  }
+}
+</style>
