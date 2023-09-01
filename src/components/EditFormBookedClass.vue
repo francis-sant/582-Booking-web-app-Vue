@@ -2,15 +2,24 @@
   <div class="editForm">
     <h3>Edit Class Information</h3>
     <form @submit.prevent="handleSubmit">
-      <input v-model="editableStudent.firstName" />
-      <input v-model="editableStudent.email" />
+      <input data-testid="firstName" v-model="editableStudent.firstName" />
+      <input data-testid="email" v-model="editableStudent.email" />
 
-      <input v-model="editableStudent.selectedTime" />
+      <input
+        data-testid="selectedTime"
+        v-model="editableStudent.selectedTime"
+      />
 
-      <input v-model="editableStudent.selectedDate" type="date" />
+      <input
+        data-testid="selectedDate"
+        v-model="editableStudent.selectedDate"
+        type="date"
+      />
 
       <button type="submit">Save</button>
-      <button type="button" @click="cancelEdit">Cancel</button>
+      <button data-testid="cancelbtn" type="cancel" @click="cancelEdit">
+        Cancel
+      </button>
     </form>
   </div>
 </template>
@@ -28,12 +37,12 @@ export default {
 
     const handleSubmit = () => {
       emit("save", editableStudent.value);
-      console.log("editablevalue", editableStudent.value);
+      // console.log("editablevalue", editableStudent.value);
     };
 
     const cancelEdit = () => {
       emit("cancel");
-      console.log("cancel");
+      // console.log("cancel");
     };
 
     return {

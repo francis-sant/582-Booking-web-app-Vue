@@ -10,8 +10,9 @@ const port = 3000;
 
 // MongoDB connection URI
 const uri =
-  //it will parse the income request body into json for all requests
-  app.use(bodyParser.json());
+
+//it will parse the income request body into json for all requests
+app.use(bodyParser.json());
 
 //use this when i install cors npm install cors --save
 var cors = require("cors");

@@ -15,7 +15,7 @@
           </li>
         </ul>
 
-        <p>Price: R$ {{ item.price }}</p>
+        <p>Price: $ {{ item.price }}</p>
       </div>
     </div>
   </div>

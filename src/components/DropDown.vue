@@ -20,8 +20,8 @@
       v-model="selectedDate"
       @change="handleDropdownChange('date', selectedDate)"
     >
-      <option v-for="(time, index) in availableDate" :key="index" :value="time">
-        {{ time }}
+      <option v-for="(date, index) in availableDate" :key="index" :value="date">
+        {{ date }}
       </option>
     </select>
     <label for="time">Choose a Time:</label>
