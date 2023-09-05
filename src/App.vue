@@ -22,7 +22,9 @@ export default {
 
     const fetchBookedClasses = async () => {
       try {
-        const response = await fetch("http://localhost:3000/student");
+        const response = await fetch(
+          "https://cautious-goldfish-44j4rv5xwv5hg66-3000.app.github.dev/student"
+        );
         if (response.ok) {
           const bookedClass = await response.json();
           // bookedClasses.value = bookedClass; // Store fetched booked classes
@@ -55,6 +57,7 @@ body {
   padding: 0;
   background-color: #ebdb04;
 }
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -88,6 +91,7 @@ nav {
 
   max-width: 400px;
 }
+
 //my available classes div:
 .myclassesdisplay {
   width: 100%;
@@ -107,6 +111,7 @@ nav {
   .schedule {
     ul {
       display: contents;
+
       li {
         list-style: none;
         margin: auto;
@@ -127,6 +132,7 @@ form {
     padding: 15px;
     border-radius: 20px;
   }
+
   button {
     margin: 10px;
     padding: 10px;
@@ -192,9 +198,11 @@ form {
       border-radius: 10px;
       font-size: 20px;
     }
+
     #class {
       margin-right: 51px;
     }
+
     #date {
       margin-right: 51px;
     }
@@ -232,6 +240,7 @@ form {
       margin-bottom: 10px;
     }
   }
+
   button {
     margin: 10px auto;
     padding: 13px;

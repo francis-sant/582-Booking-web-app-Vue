@@ -180,13 +180,16 @@ export default {
 
       // Save the booking details to a collection in the database
       try {
-        const response = await fetch("http://localhost:3000/student/booking", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(combinedBookingDetails),
-        });
+        const response = await fetch(
+          "https://cautious-goldfish-44j4rv5xwv5hg66-3000.app.github.dev/student/booking",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(combinedBookingDetails),
+          }
+        );
 
         if (response.ok) {
           bookingConfirmed.value = true;

@@ -91,13 +91,16 @@ export default {
       };
 
       try {
-        await fetch("http://localhost:3000/services/booked", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(schedule),
-        });
+        await fetch(
+          "https://cautious-goldfish-44j4rv5xwv5hg66-3000.app.github.dev/services/booked",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(schedule),
+          }
+        );
         console.log(schedule);
         const store = useTeacherStore();
         store.addBookedClass(schedule);
@@ -163,6 +166,7 @@ export default {
   fieldset {
     margin-bottom: 10px;
   }
+
   .successMessage {
     color: #22e14b;
     background: #000000;

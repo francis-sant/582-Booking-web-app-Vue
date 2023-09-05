@@ -60,7 +60,7 @@ export default {
         const { _id, ...updatedStudentDataWithoutId } = updatedStudent;
 
         const response = await fetch(
-          `http://localhost:3000/classes/booking/rescheduled/${_id}`,
+          `https://cautious-goldfish-44j4rv5xwv5hg66-3000.app.github.dev/classes/booking/rescheduled/${_id}`,
           {
             method: "PUT",
             headers: {
