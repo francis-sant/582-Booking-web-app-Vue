@@ -1,5 +1,5 @@
 import { shallowMount } from "@vue/test-utils";
-import MyClassesDisplay from "@/components/MyClassesDisplay.vue"; 
+import MyClassesDisplay from "@/components/MyClassesDisplay.vue";
 
 describe("MyClassesDisplay.vue", () => {
   it("displays myClasses properly", () => {
@@ -19,7 +19,6 @@ describe("MyClassesDisplay.vue", () => {
         ],
         price: 100,
       },
-    
     ];
 
     const wrapper = shallowMount(MyClassesDisplay, {

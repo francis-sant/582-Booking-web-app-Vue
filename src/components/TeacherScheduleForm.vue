@@ -1,10 +1,10 @@
 <template>
   <form class="insertForm" @submit.prevent="submitSchedule">
     <label for="teacher">Instructor Name:</label>
-    <input type="text" v-model="instructor" required />
+    <input type="text" v-model="instructor" required id="teacher" />
 
     <label for="type">Type of Class:</label>
-    <input type="text" v-model="type" required />
+    <input type="text" v-model="type" id="type" required />
 
     <label for="type">Service Name </label>
     <input type="text" v-model="name" required />
@@ -49,6 +49,7 @@
 <script>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { useTeacherStore } from "@/store/teacher.js";
 
 export default {
   name: "TeacherScheduleForm",
@@ -74,7 +75,7 @@ export default {
       dateTimes.value.splice(index, 1);
     };
 
-    // const teacherStore = useTeacherStore();
+    // // const teacherStore = useTeacherStore();
     const router = useRouter();
 
     const submitSchedule = async () => {
@@ -98,7 +99,8 @@ export default {
           body: JSON.stringify(schedule),
         });
         console.log(schedule);
-
+        const store = useTeacherStore();
+        store.addBookedClass(schedule);
         successMessage.value = "Service Added Sucessfully!";
         router.push("/services/booked");
         clearForm();

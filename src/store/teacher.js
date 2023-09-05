@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 export const useTeacherStore = defineStore("teacher", {
   state: () => ({
     availableClasses: [],
-    bookedClasses: [],
+    // bookedClasses: [],
   }),
   getters: {
     getAvClasses: (state) => state.availableClasses,
@@ -11,6 +11,9 @@ export const useTeacherStore = defineStore("teacher", {
   actions: {
     setAvClasses(classes) {
       this.availableClasses = classes;
+    },
+    addBookedClass(classes) {
+      this.availableClasses.push(classes);
     },
   },
 });

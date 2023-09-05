@@ -94,24 +94,6 @@ export default {
       fetchBookedClasses();
     });
 
-    const availableDate = computed(() => {
-      if (!selectedClass.value) {
-        return ["Please Select One Class First"];
-      }
-      const classDateTimes = selectedClass.value.dateTimes;
-
-      const dates = classDateTimes.map((dateTime) => dateTime.date);
-
-      return dates;
-    });
-
-    const availableTime = computed(() => {
-      return calculateAvailableTimeSlots(
-        selectedClass.value,
-        selectedDate.value,
-        selectedTime.value
-      );
-    });
     // ----------------------------------------------------------------------
     const handleDropdownChange = (type, value) => {
       if (type === "class") {
@@ -122,6 +104,8 @@ export default {
         selectedDate.value = value;
         selectedTime.value = null;
       } else if (type === "time") {
+        console.log("time selected:", value);
+        console.log("timeIsBooked:", selectedDate.value);
         selectedTime.value = value;
       }
 
@@ -136,7 +120,34 @@ export default {
         validationMessage.value = "";
       }
     };
+    // ------------------------------------------------------------------------
+    const availableDate = computed(() => {
+      if (!selectedClass.value) {
+        return ["Please Select One Class First"];
+      }
+      const classDateTimes = selectedClass.value.dateTimes;
 
+      const dates = classDateTimes.map((dateTime) => dateTime.date);
+
+      return dates;
+    });
+
+    const availableTime = computed(() => {
+      if (selectedDate.value && selectedClass.value) {
+        // Handle the case where a date is already selected
+        const availableTimes = calculateAvailableTimeSlots(
+          selectedClass.value,
+          selectedDate.value,
+          selectedTime.value
+        );
+        return availableTimes;
+      } else {
+        // Handle the default case where no date is selected
+        return ["Select One Date First"];
+      }
+    });
+
+    // -----------------------------------------------------------------------
     const isFormEmpty = computed(() => {
       return (
         !selectedClass.value ||
@@ -180,8 +191,10 @@ export default {
         if (response.ok) {
           bookingConfirmed.value = true;
           bookingDetails.value = combinedBookingDetails;
+          // const store = useClassesStore();
+          // store.addBookedClass(combinedBookingDetails);
           // router.push("/student/booking");
-          fetchBookedClasses();
+          await fetchBookedClasses();
         } else {
           console.error("Booking request failed:", response.statusText);
         }

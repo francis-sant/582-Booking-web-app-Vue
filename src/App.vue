@@ -61,6 +61,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+
+  h1 {
+    padding: 10px;
+  }
 }
 
 nav {
@@ -210,7 +214,6 @@ form {
 
 .personalinfo {
   background: #005670;
-  padding: 20px;
   color: #a4fcc6;
   font-weight: 200;
   font-size: 20px;
@@ -249,6 +252,29 @@ form {
       border-color: #a4fcc6;
       color: #a4fcc6;
       cursor: pointer;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .personalinfo {
+      font-size: 16px;
+    }
+
+    .personalForm {
+      padding: 10px;
+      min-width: unset;
+      max-width: 100%;
+    }
+
+    input {
+      padding: 8px;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    button {
+      padding: 10px;
+      font-size: 18px;
     }
   }
 }
@@ -312,7 +338,7 @@ form {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .myclasses .dropdown {
     flex-direction: column;
     align-items: center;

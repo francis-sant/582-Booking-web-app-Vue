@@ -2,6 +2,9 @@
   <div>
     <h2>Student Class Dashboard</h2>
     <div class="studentsinfo">
+      <div v-if="bookedClass[0] === ''">
+        <p>No classes booked yet.</p>
+      </div>
       <div
         v-for="student in bookedClass[0]"
         :key="student._id"
@@ -77,7 +80,7 @@ export default {
             bookedClass.value[0][updatedStudentIndex] = updatedStudent;
           }
 
-          selectedStudent.value = null; // Clear the selected student after updating
+          selectedStudent.value = null;
         } else {
           console.error("Error updating student:", response.statusText);
         }

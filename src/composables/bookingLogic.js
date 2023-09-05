@@ -5,8 +5,8 @@ export function useBookingLogic() {
   const classesStore = useClassesStore();
 
   // const availableClasses = computed(() => classesStore.getAvClasses);
-  const validationMessage = ref(""); // Define validationMessage
-  const isAlreadyBooked = ref(false); // Define isAlreadyBooked
+  const validationMessage = ref("");
+  const isAlreadyBooked = ref(false);
 
   // Fetch booked classes from the server
   async function fetchBookedClasses() {
@@ -125,7 +125,7 @@ export function useBookingLogic() {
 
     const bookedClasses = classesStore.getBookedClasses;
 
-    let isAlreadyBookedValue = false; // Initialize outside the loop
+    let isAlreadyBookedValue = false;
 
     for (const item of bookedClasses[0]) {
       if (
@@ -160,8 +160,8 @@ export function useBookingLogic() {
     timeIsBooked,
     calculateAvailableTimeSlots,
     checkBookingAvailability,
-    validationMessage, // Include validationMessage in the return object
-    isAlreadyBooked, // Include isAlreadyBooked in the return object
+    validationMessage,
+    isAlreadyBooked,
     // availableClasses,
   };
 }

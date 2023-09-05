@@ -23,7 +23,6 @@
 
 <script>
 import { useTeacherStore } from "@/store/teacher.js";
-// import { computed } from "vue";
 
 export default {
   name: "MyClassesDisplay",
