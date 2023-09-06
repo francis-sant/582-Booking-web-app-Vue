@@ -22,7 +22,7 @@ export default {
 
     const fetchBookedClasses = async () => {
       try {
-        const response = await fetch("http://localhost:3000/student");
+        const response = await fetch("http://localhost:3000/");
         if (response.ok) {
           const bookedClass = await response.json();
           // bookedClasses.value = bookedClass; // Store fetched booked classes

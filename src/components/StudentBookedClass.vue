@@ -60,7 +60,7 @@ export default {
         const { _id, ...updatedStudentDataWithoutId } = updatedStudent;
 
         const response = await fetch(
-          `http://localhost:3000/classes/booking/rescheduled/${_id}`,
+          `http://localhost:3000/student/rescheduled/${_id}`,
           {
             method: "PUT",
             headers: {

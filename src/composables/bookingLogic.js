@@ -11,7 +11,7 @@ export function useBookingLogic() {
   // Fetch booked classes from the server
   async function fetchBookedClasses() {
     try {
-      const response = await fetch("http://localhost:3000/student/dashboard");
+      const response = await fetch("http://localhost:3000/student/booking");
       if (response.ok) {
         const bookedClass = await response.json();
         // bookedClasses.value = bookedClass; // Store fetched booked classes

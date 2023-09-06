@@ -10,7 +10,7 @@ const port = 3000;
 
 // MongoDB connection URI
 const uri =
-
+ 
 //it will parse the income request body into json for all requests
 app.use(bodyParser.json());
 
@@ -64,7 +64,7 @@ app.use(cors());
 //   }
 // });
 // ---------------------------------------------------------------------------------------------
-app.post("/services/booked", async (req, res) => {
+app.post("/instructor/booking", async (req, res) => {
   const client = new MongoClient(uri);
 
   try {
@@ -89,7 +89,7 @@ app.post("/services/booked", async (req, res) => {
   }
 });
 // ---------------------------------------------------------------------------------------------
-app.get("/services", async (req, res) => {
+app.get("/instructor", async (req, res) => {
   const client = new MongoClient(uri);
 
   try {
@@ -116,7 +116,7 @@ app.get("/services", async (req, res) => {
 
 // ---------------------------------------------------------------------------------------------
 
-app.put("/classes/booking/rescheduled/:id", async (req, res) => {
+app.put("/student/rescheduled/:id", async (req, res) => {
   const client = new MongoClient(uri);
 
   try {
@@ -171,7 +171,7 @@ app.post("/student/booking", async (req, res) => {
 // --------------------------------------------------------------------------------------
 
 // /classes/booking/bookedclasses
-app.get("/student/dashboard", async (req, res) => {
+app.get("/student/booking", async (req, res) => {
   const client = new MongoClient(uri);
 
   try {
@@ -198,7 +198,7 @@ app.get("/student/dashboard", async (req, res) => {
 // --------------------------------------------------------------------------------------
 
 //Read route-get request for the route
-app.get("/student", async (req, res) => {
+app.get("/", async (req, res) => {
   const client = new MongoClient(uri);
 
   try {

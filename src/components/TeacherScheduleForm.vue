@@ -91,7 +91,7 @@ export default {
       };
 
       try {
-        await fetch("http://localhost:3000/services/booked", {
+        await fetch("http://localhost:3000/instructor/booking", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -102,7 +102,7 @@ export default {
         const store = useTeacherStore();
         store.addBookedClass(schedule);
         successMessage.value = "Service Added Sucessfully!";
-        router.push("/services/booked");
+        router.push("/instructor/booking");
         clearForm();
       } catch (error) {
         failMessage.value = "Your Request Failed!" + error;

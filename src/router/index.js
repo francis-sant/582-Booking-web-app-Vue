@@ -15,12 +15,13 @@ const routes = [
   },
   {
     path: "/student",
-    name: "classes",
+    name: "student",
     component: StudentPage,
     meta: { role: "student", requiresAuth: true },
     children: [
       {
-        path: "/student/dashboard",
+        // /student/dashboard
+        path: "/student/booking",
         name: "studentclasses",
         component: ClassesAvailable,
       },
@@ -34,18 +35,19 @@ const routes = [
 
   {
     path: "/instructor",
-    name: "services",
+    name: "instructor",
     component: InstructorPage,
     meta: { role: "instructor", requiresAuth: true },
     children: [
       {
-        path: "/services/booked",
-        name: "services",
+        // "/services/booked",
+        path: "/instructor/booking",
+        name: "instructorclasses",
         component: TeacherClasses,
       },
       {
-        path: "/instructor/reschedule",
-        name: "reschedule",
+        path: "/instructor/student/reschedule",
+        name: "rescheduleclasses",
         component: RescheduleClass,
       },
       // {

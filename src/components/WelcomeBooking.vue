@@ -29,9 +29,9 @@ export default {
       authStore.authenticate();
 
       if (role === "instructor") {
-        this.$router.push("/services/booked");
+        this.$router.push("/instructor/booking");
       } else if (role === "student") {
-        this.$router.push("/student/dashboard");
+        this.$router.push("/student/booking");
       }
     },
   },
