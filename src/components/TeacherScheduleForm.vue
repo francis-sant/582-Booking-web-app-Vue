@@ -163,6 +163,7 @@ export default {
   fieldset {
     margin-bottom: 10px;
   }
+
   .successMessage {
     color: #22e14b;
     background: #000000;

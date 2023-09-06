@@ -10,7 +10,7 @@ const port = 3000;
 
 // MongoDB connection URI
 const uri =
- 
+
 //it will parse the income request body into json for all requests
 app.use(bodyParser.json());
 

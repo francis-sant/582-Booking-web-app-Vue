@@ -55,6 +55,7 @@ body {
   padding: 0;
   background-color: #ebdb04;
 }
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -88,6 +89,7 @@ nav {
 
   max-width: 400px;
 }
+
 //my available classes div:
 .myclassesdisplay {
   width: 100%;
@@ -107,6 +109,7 @@ nav {
   .schedule {
     ul {
       display: contents;
+
       li {
         list-style: none;
         margin: auto;
@@ -127,6 +130,7 @@ form {
     padding: 15px;
     border-radius: 20px;
   }
+
   button {
     margin: 10px;
     padding: 10px;
@@ -192,9 +196,11 @@ form {
       border-radius: 10px;
       font-size: 20px;
     }
+
     #class {
       margin-right: 51px;
     }
+
     #date {
       margin-right: 51px;
     }
@@ -232,6 +238,7 @@ form {
       margin-bottom: 10px;
     }
   }
+
   button {
     margin: 10px auto;
     padding: 13px;
