@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>Student Class Dashboard</h2>
+    <h2>My Bookings</h2>
     <div class="studentsinfo">
       <div v-if="bookedClass[0] === ''">
         <p>No classes booked yet.</p>
@@ -10,7 +10,7 @@
         :key="student._id"
         class="studentdetails"
       >
-        <h3>My Classes Information</h3>
+        <h3>My Class</h3>
         <p>First Name: {{ student.firstName }}</p>
         <p>Email: {{ student.email }}</p>
         <p>Class Name: {{ student.className }}</p>
@@ -60,7 +60,7 @@ export default {
         const { _id, ...updatedStudentDataWithoutId } = updatedStudent;
 
         const response = await fetch(
-          `http://localhost:3000/student/rescheduled/${_id}`,
+          `https://cautious-goldfish-44j4rv5xwv5hg66-3000.app.github.dev/student/rescheduled/${_id}`,
           {
             method: "PUT",
             headers: {

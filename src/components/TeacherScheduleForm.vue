@@ -91,14 +91,17 @@ export default {
       };
 
       try {
-        await fetch("http://localhost:3000/instructor/booking", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(schedule),
-        });
-        console.log(schedule);
+        await fetch(
+          "https://cautious-goldfish-44j4rv5xwv5hg66-3000.app.github.dev/instructor/booking",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(schedule),
+          }
+        );
+        // console.log(schedule);
         const store = useTeacherStore();
         store.addBookedClass(schedule);
         successMessage.value = "Service Added Sucessfully!";

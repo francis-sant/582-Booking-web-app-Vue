@@ -1,14 +1,18 @@
 <template>
-  <div>
+  <div class="bookingclass">
     <h2>My Classes</h2>
     <div class="myclasses">
       <Dropdown
+        ref="dropdown"
         :availableClasses="availableClasses"
         :availableDate="availableDate"
         :availableTime="availableTime"
         @change="handleDropdownChange"
+        @time-selected="handleTimeSelected"
       />
     </div>
+
+    <button @click="resetDropdown">Start Over My Booking</button>
 
     <div class="validationMessage">
       {{ validationMessage }}
@@ -58,6 +62,15 @@ export default {
     PersonalInfo,
     Dropdown,
   },
+  methods: {
+    resetDropdown() {
+      this.selectedClass = null;
+      this.selectedDate = null;
+      this.selectedTime = null;
+
+      this.$refs.dropdown.resetFields();
+    },
+  },
   setup() {
     const {
       fetchBookedClasses,
@@ -88,9 +101,9 @@ export default {
     });
 
     // const router = useRouter();
-    selectedClass.value = availableClasses.value[0];
+    // selectedClass.value = availableClasses.value[0];
     onMounted(async () => {
-      selectedClass.value = availableClasses.value[0];
+      // selectedClass.value = availableClasses.value[0];
       fetchBookedClasses();
     });
 
@@ -104,8 +117,8 @@ export default {
         selectedDate.value = value;
         selectedTime.value = null;
       } else if (type === "time") {
-        console.log("time selected:", value);
-        console.log("timeIsBooked:", selectedDate.value);
+        // console.log("time selected:", value);
+        // console.log("timeIsBooked:", selectedDate.value);
         selectedTime.value = value;
       }
 
@@ -118,6 +131,27 @@ export default {
         validationMessage.value = bookingAvailability.validationMessage;
       } else {
         validationMessage.value = "";
+      }
+    };
+
+    const handleTimeSelected = (time) => {
+      // Perform the time booking availability check
+      const bookingAvailability = checkBookingAvailability(
+        selectedClass.value,
+        selectedDate.value,
+        time
+      );
+
+      if (bookingAvailability.isAlreadyBooked) {
+        validationMessage.value = bookingAvailability.validationMessage;
+        selectedTime.value = null;
+        isAlreadyBooked.value = true;
+        // console.log("time booked:", isAlreadyBooked.value);
+      } else {
+        selectedTime.value = time;
+        validationMessage.value = "";
+        isAlreadyBooked.value = false;
+        // console.log("time booked:", isAlreadyBooked.value);
       }
     };
     // ------------------------------------------------------------------------
@@ -143,7 +177,7 @@ export default {
         return availableTimes;
       } else {
         // Handle the default case where no date is selected
-        return ["Select One Date First"];
+        return ["Please choose a Class & Date first"];
       }
     });
 
@@ -176,17 +210,20 @@ export default {
         ...studentInfo,
         ...classDetails,
       };
-      console.log("Booking details:", classDetails, studentInfo);
+      // console.log("Booking details:", classDetails, studentInfo);
 
       // Save the booking details to a collection in the database
       try {
-        const response = await fetch("http://localhost:3000/student/booking", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(combinedBookingDetails),
-        });
+        const response = await fetch(
+          "https://cautious-goldfish-44j4rv5xwv5hg66-3000.app.github.dev/student/booking",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(combinedBookingDetails),
+          }
+        );
 
         if (response.ok) {
           bookingConfirmed.value = true;
@@ -225,6 +262,7 @@ export default {
       isRescheduled,
       timeIsBooked,
       isFormEmpty,
+      handleTimeSelected,
     };
   },
 };

@@ -11,7 +11,9 @@ export function useBookingLogic() {
   // Fetch booked classes from the server
   async function fetchBookedClasses() {
     try {
-      const response = await fetch("http://localhost:3000/student/booking");
+      const response = await fetch(
+        "https://cautious-goldfish-44j4rv5xwv5hg66-3000.app.github.dev/student/booking"
+      );
       if (response.ok) {
         const bookedClass = await response.json();
         // bookedClasses.value = bookedClass; // Store fetched booked classes
@@ -134,9 +136,9 @@ export function useBookingLogic() {
         item.selectedTime === selectedTimeValue
       ) {
         validationMessage.value =
-          "There is no spot available at this time anymore, choose another time";
+          "There is no spot available at this time anymore, please choose another time";
         isAlreadyBookedValue = true;
-        console.log("isAlreadyBooked", isAlreadyBookedValue);
+        // console.log("isAlreadyBooked", isAlreadyBookedValue);
       }
     }
 

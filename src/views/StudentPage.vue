@@ -2,7 +2,8 @@
   <div>
     <nav>
       <!-- <router-link to="/student">Book My Class</router-link> | -->
-      <router-link to="/student/booking">Booking & Dashboard</router-link>|
+      <router-link to="/student/booking">Book my Class</router-link>|
+      <router-link to="/student/reschedule">My Booked Classes</router-link>
     </nav>
     <router-view />
 

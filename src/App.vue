@@ -22,7 +22,9 @@ export default {
 
     const fetchBookedClasses = async () => {
       try {
-        const response = await fetch("http://localhost:3000/");
+        const response = await fetch(
+          "https://cautious-goldfish-44j4rv5xwv5hg66-3000.app.github.dev/"
+        );
         if (response.ok) {
           const bookedClass = await response.json();
           // bookedClasses.value = bookedClass; // Store fetched booked classes
@@ -178,31 +180,50 @@ form {
     margin: 0;
   }
 }
+.bookingclass {
+  margin: 30px 0;
 
-.myclasses {
-  background: #005670;
-  padding: 20px;
-  color: #a4fcc6;
-  font-weight: 200;
-  font-size: 20px;
+  button {
+    margin: 10px;
+    padding: 10px;
+    border: 3px solid rgb(0, 86, 112);
+    background-color: #a4fcc6;
+    color: rgb(0, 86, 112);
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
 
-  .dropdown {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    select {
-      padding: 10px;
-      border-radius: 10px;
-      font-size: 20px;
+    &:hover {
+      background-color: rgb(0, 86, 112);
+      color: #a4fcc6;
     }
+  }
 
-    #class {
-      margin-right: 51px;
-    }
+  .myclasses {
+    background: #005670;
+    padding: 20px;
+    color: #a4fcc6;
+    font-weight: 200;
+    font-size: 20px;
 
-    #date {
-      margin-right: 51px;
+    .dropdown {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      select {
+        padding: 10px;
+        border-radius: 10px;
+        font-size: 20px;
+      }
+
+      #class {
+        margin-right: 51px;
+      }
+
+      #date {
+        margin-right: 51px;
+      }
     }
   }
 }
@@ -214,8 +235,12 @@ form {
   border-radius: 30px;
   padding: 20px;
   width: 90%;
-  max-width: 252px;
+  /* max-width: 252px; */
   margin: 20px auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-wrap: wrap;
 }
 
 .personalinfo {
@@ -296,9 +321,11 @@ form {
 
   h2,
   p {
-    border: 3px solid;
-    padding: 30px;
+    padding: 10px;
     border-radius: 20px;
+    border-right: 3px solid white;
+    border-left: 3px solid white;
+    margin: 10px;
   }
 
   @media (max-width: 768px) {
@@ -321,8 +348,7 @@ form {
   flex: 1;
   width: 400px;
   margin: 10px;
-
-  color: #a4fcc6;
+  color: #ffffff;
   background-color: rgb(0, 86, 112);
   border-radius: 30px;
   padding: 20px;

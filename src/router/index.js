@@ -5,7 +5,9 @@ import TeacherClasses from "../views/TeacherClasses.vue";
 import RescheduleClass from "@/views/RescheduleClass.vue";
 import StudentPage from "@/views/StudentPage.vue";
 import InstructorPage from "@/views/InstructorPage.vue";
+import StudentBookedClass from "@/components/StudentBookedClass.vue";
 import { useAuthStore } from "@/store/authentication.js";
+import NotFoundComponent from "@/views/NotFoundComponent.vue";
 
 const routes = [
   {
@@ -25,11 +27,11 @@ const routes = [
         name: "studentclasses",
         component: ClassesAvailable,
       },
-      // {
-      //   path: "/student/dashboard",
-      //   name: "studentdashboard",
-      //   component: ClassesAvailable,
-      // },
+      {
+        path: "/student/reschedule",
+        name: "studentreschedule",
+        component: StudentBookedClass,
+      },
     ],
   },
 
@@ -46,17 +48,16 @@ const routes = [
         component: TeacherClasses,
       },
       {
-        path: "/instructor/student/reschedule",
+        path: "student/reschedule",
         name: "rescheduleclasses",
         component: RescheduleClass,
       },
-      // {
-      //   path: "/student/booking",
-      //   name: "services",
-      //   component: ClassesAvailable,
-      //   meta: { role: "student", requiresAuth: true },
-      // },
     ],
+  },
+  {
+    path: "/:catchAll(.*)",
+    name: "notFound",
+    component: NotFoundComponent,
   },
 ];
 

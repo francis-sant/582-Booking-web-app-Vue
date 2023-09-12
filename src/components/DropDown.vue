@@ -1,5 +1,5 @@
 <template>
-  <div class="dropdown">
+  <div class="dropdown" ref="dropdown">
     <label for="class">Choose a Class:</label>
     <select
       id="class"
@@ -24,7 +24,7 @@
         {{ date }}
       </option>
     </select>
-    <label for="time">Choose a Time:</label>
+    <!-- <label for="time">Choose a Time:</label>
     <select
       id="time"
       v-model="selectedTime"
@@ -33,7 +33,20 @@
       <option v-for="(time, index) in availableTime" :key="index" :value="time">
         {{ time }}
       </option>
-    </select>
+    </select> -->
+    <div class="time-container">
+      Available Time:
+      <div
+        v-for="(time, index) in availableTime"
+        :key="index"
+        @click="handleTimeClick(time)"
+        :class="{ 'disabled-time': time === selectedTime }"
+      >
+        {{ time }}
+      </div>
+    </div>
+
+    <!-- <button @click="resetFields">Reset</button> -->
   </div>
 </template>
 
@@ -43,6 +56,7 @@ export default {
     availableClasses: Object,
     availableDate: Array,
     availableTime: Array,
+    isAlreadyBooked: Boolean,
   },
   data() {
     return {
@@ -55,8 +69,44 @@ export default {
     handleDropdownChange(type, value) {
       this.$emit("change", type, value);
     },
+
+    handleTimeClick(time) {
+      if (time !== this.selectedTime) {
+        this.selectedTime = time;
+        this.$emit("time-selected", time);
+      }
+    },
+
+    resetFields() {
+      this.selectedClass = null;
+      this.selectedDate = null;
+      this.selectedTime = null;
+
+      this.$emit("reset-clicked");
+    },
   },
 };
 </script>
 
-<style></style>
+<style scoped>
+.time-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: start;
+}
+
+.time-container div {
+  cursor: pointer;
+  padding: 5px;
+  margin: 5px;
+  border: 2px solid #ffffff;
+  color: #ffffff;
+  border-radius: 5px;
+}
+
+.disabled-time {
+  pointer-events: none;
+  background-color: #cca702;
+}
+</style>

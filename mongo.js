@@ -18,6 +18,12 @@ app.use(bodyParser.json());
 var cors = require("cors");
 app.use(cors());
 
+
+// 
+// CHECK --------------------------------------------------------
+// https://expressjs.com/en/starter/static-files.html
+// app.use("/static", express.static("/public"));
+
 // ---------------------------------------------------------------------------------------------
 // app.delete("/services/booked/:id", async (req, res) => {
 //   const client = new MongoClient(uri);
@@ -221,6 +227,18 @@ app.get("/", async (req, res) => {
   }
 });
 
+// ---------------------------------------------------------------------------------------------
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  // Handle errors and respond with JSON
+  res.status(500).json({ error: "An error occurred while processing the request." });
+});
+
+// https://expressjs.com/en/starter/faq.html
+app.use((req, res, next) => {
+  res.status(404).sendFile(__dirname + "/public/404.html");
+});
 // ---------------------------------------------------------------------------------------------
 
 app.listen(port, () => {
