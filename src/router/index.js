@@ -55,7 +55,7 @@ const routes = [
     ],
   },
   {
-    path: "/:catchAll(.*)",
+    path: "/*",
     name: "notFound",
     component: NotFoundComponent,
   },

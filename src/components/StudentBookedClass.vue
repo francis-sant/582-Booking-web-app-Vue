@@ -2,11 +2,12 @@
   <div>
     <h2>My Bookings</h2>
     <div class="studentsinfo">
-      <div v-if="bookedClass[0] === ''">
+      <div v-if="bookedClass[0].length === 0">
         <p>No classes booked yet.</p>
       </div>
+
       <div
-        v-for="student in bookedClass[0]"
+        v-for="student of bookedClasses"
         :key="student._id"
         class="studentdetails"
       >
@@ -35,18 +36,24 @@
 <script>
 import { useClassesStore } from "@/store/classes.js";
 import EditFormBookedClass from "@/components/EditFormBookedClass.vue";
-import { ref } from "vue";
+import { ref, onMounted, computed } from "vue";
+import { useBookingLogic } from "@/composables/bookingLogic.js";
 
 export default {
   components: {
     EditFormBookedClass,
   },
+
   setup() {
     const store = useClassesStore();
-    const bookedClass = ref(store.getBookedClasses);
+    const bookedClass = computed(() => {
+      return store.getBookedClasses;
+    });
+    const { fetchBookedClasses } = useBookingLogic();
+    const bookedClasses = ref([]);
+
     const availableClasses = ref(store.getAvClasses);
     const selectedStudent = ref(null);
-
     const editBooking = (bookingDetails) => {
       selectedStudent.value = bookingDetails;
     };
@@ -89,7 +96,15 @@ export default {
       }
     };
 
+    onMounted(() => {
+      fetchBookedClasses();
+      const latestPosition = bookedClass.value.length - 1;
+      bookedClasses.value = bookedClass.value[latestPosition];
+      console.log(bookedClasses.value);
+    });
+
     return {
+      bookedClasses,
       bookedClass,
       selectedStudent,
       editBooking,

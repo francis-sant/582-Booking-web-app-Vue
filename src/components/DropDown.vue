@@ -6,6 +6,8 @@
       v-model="selectedClass"
       @change="handleDropdownChange('class', selectedClass)"
     >
+      <option disabled value="">Select a Class</option>
+
       <option
         v-for="(classes, index) in availableClasses"
         :key="index"
@@ -20,6 +22,7 @@
       v-model="selectedDate"
       @change="handleDropdownChange('date', selectedDate)"
     >
+      <option disabled value="">Select One Class First</option>
       <option v-for="(date, index) in availableDate" :key="index" :value="date">
         {{ date }}
       </option>
@@ -45,9 +48,8 @@
         {{ time }}
       </div>
     </div>
-
-    <!-- <button @click="resetFields">Reset</button> -->
   </div>
+  <!-- <button @click="resetFields">Start Over My Booking</button> -->
 </template>
 
 <script>
@@ -60,8 +62,8 @@ export default {
   },
   data() {
     return {
-      selectedClass: null,
-      selectedDate: null,
+      selectedClass: "",
+      selectedDate: "",
       selectedTime: null,
     };
   },
@@ -78,11 +80,10 @@ export default {
     },
 
     resetFields() {
-      this.selectedClass = null;
-      this.selectedDate = null;
+      this.selectedClass = "";
+      this.selectedDate = "";
       this.selectedTime = null;
-
-      this.$emit("reset-clicked");
+      // this.$emit("reset-clicked");
     },
   },
 };

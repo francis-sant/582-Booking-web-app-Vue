@@ -13,9 +13,23 @@
         <input id="phone" type="number" v-model="phone" required />
 
         <label for="email">Email:</label>
-        <input id="email" v-model="email" required />
+        <input
+          id="email"
+          type="email"
+          v-model="email"
+          required
+          pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}"
+          title="Please enter a valid email address."
+          @input="validateEmail"
+        />
       </div>
-      <button @click="confirmBooking" :disabled="isFormEmpty">
+      <p v-if="emailValidationError" class="error-message">
+        {{ emailValidationError }}
+      </p>
+      <button
+        @click="confirmBooking"
+        :disabled="isFormEmpty && emailValidationError"
+      >
         Confirm Booking
       </button>
     </div>
@@ -36,6 +50,7 @@ export default {
       lastName: "",
       phone: "",
       email: "",
+      emailValidationError: "",
     };
   },
   computed: {
@@ -44,8 +59,21 @@ export default {
     },
   },
   methods: {
+    validateEmail() {
+      if (this.email === "") {
+        this.emailValidationError = "Email is required.";
+      } else {
+        const emailPattern =
+          /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+        if (!emailPattern.test(this.email)) {
+          this.emailValidationError = "Please enter a valid email address.";
+        } else {
+          this.emailValidationError = "";
+        }
+      }
+    },
     confirmBooking() {
-      if (!this.isFormEmpty) {
+      if (!this.isFormEmpty && !this.emailValidationError) {
         this.$emit("booking-confirmed", {
           firstName: this.firstName,
           lastName: this.lastName,
@@ -54,6 +82,29 @@ export default {
         });
       }
     },
+
+    resetFields() {
+      this.firstName = "";
+      this.lastName = "";
+      this.phone = "";
+      this.email = "";
+      this.emailValidationError = "";
+    },
+  },
+  watch: {
+    bookingConfirmed: function (newVal) {
+      if (newVal === true) {
+        this.resetFields();
+      }
+    },
   },
 };
 </script>
+
+<style>
+.error-message {
+  color: red;
+  margin-top: 5px;
+  font-size: 14px;
+}
+</style>

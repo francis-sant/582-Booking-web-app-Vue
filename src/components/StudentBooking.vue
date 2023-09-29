@@ -27,6 +27,7 @@
     </div>
 
     <PersonalInfo
+      ref="personalinfo"
       :isFormInvalid="isFormEmpty"
       :student-info="studentInfo"
       @booking-confirmed="sendBooking"
@@ -64,10 +65,10 @@ export default {
   },
   methods: {
     resetDropdown() {
-      this.selectedClass = null;
-      this.selectedDate = null;
+      this.selectedClass = "";
+      this.selectedDate = "";
       this.selectedTime = null;
-
+      this.$refs.personalinfo.resetFields();
       this.$refs.dropdown.resetFields();
     },
   },
@@ -228,8 +229,8 @@ export default {
         if (response.ok) {
           bookingConfirmed.value = true;
           bookingDetails.value = combinedBookingDetails;
-          // const store = useClassesStore();
-          // store.addBookedClass(combinedBookingDetails);
+          const store = useClassesStore();
+          store.addBookedClass(combinedBookingDetails);
           // router.push("/student/booking");
           await fetchBookedClasses();
         } else {

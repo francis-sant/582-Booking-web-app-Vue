@@ -188,14 +188,14 @@ form {
     padding: 10px;
     border: 3px solid rgb(0, 86, 112);
     background-color: #a4fcc6;
-    color: rgb(0, 86, 112);
+    color: #005670;
     font-size: 20px;
     font-weight: bold;
     cursor: pointer;
 
     &:hover {
-      background-color: rgb(0, 86, 112);
-      color: #a4fcc6;
+      background-color: rgb(255, 255, 255);
+      color: #005670;
     }
   }
 
@@ -230,12 +230,12 @@ form {
 
 .classInfo {
   font-size: 19px;
-  color: #005670;
-  background-color: #a4fcc6;
+  color: black;
+  background-color: #fdfdfd;
   border-radius: 30px;
   padding: 20px;
   width: 90%;
-  /* max-width: 252px; */
+  font-weight: 600;
   margin: 20px auto;
   display: flex;
   align-items: center;
@@ -280,9 +280,9 @@ form {
     cursor: not-allowed;
 
     &:enabled {
-      background-color: rgb(0, 86, 112);
+      background-color: rgb(250, 250, 250);
       border-color: #a4fcc6;
-      color: #a4fcc6;
+      color: rgb(0, 86, 112);
       cursor: pointer;
     }
   }

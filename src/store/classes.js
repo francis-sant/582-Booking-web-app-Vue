@@ -8,9 +8,7 @@ export const useClassesStore = defineStore("classes", {
   }),
   getters: {
     getAvClasses: (state) => state.availableClasses,
-    getBookedClasses(state) {
-      return state.bookedClasses;
-    },
+    getBookedClasses: (state) => state.bookedClasses,
   },
   actions: {
     setAvClasses(classes) {
