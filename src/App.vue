@@ -315,7 +315,7 @@ form {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  background: #c35f16;
+  background: #1b0e8b;
   color: white;
   font-size: 20px;
 

@@ -7,7 +7,6 @@
       <router-link to="/instructor/student/reschedule"
         >Students Booked</router-link
       >
-      |
     </nav>
     <router-view />
   </div>

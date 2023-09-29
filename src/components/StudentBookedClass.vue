@@ -1,33 +1,34 @@
 <template>
   <div>
     <h2>My Bookings</h2>
-    <div class="studentsinfo">
-      <div v-if="bookedClass[0].length === 0">
+    <div>
+      <div v-if="bookedClass.value && bookedClass.value[0].length === 0">
         <p>No classes booked yet.</p>
       </div>
+      <div v-else class="studentsinfo">
+        <div
+          v-for="student of bookedClasses"
+          :key="student._id"
+          class="studentdetails"
+        >
+          <h3>My Class</h3>
+          <p>First Name: {{ student.firstName }}</p>
+          <p>Email: {{ student.email }}</p>
+          <p>Class Name: {{ student.className }}</p>
+          <p>Selected Date: {{ student.selectedDate }}</p>
+          <p>Selected Time: {{ student.selectedTime }}</p>
 
-      <div
-        v-for="student of bookedClasses"
-        :key="student._id"
-        class="studentdetails"
-      >
-        <h3>My Class</h3>
-        <p>First Name: {{ student.firstName }}</p>
-        <p>Email: {{ student.email }}</p>
-        <p>Class Name: {{ student.className }}</p>
-        <p>Selected Date: {{ student.selectedDate }}</p>
-        <p>Selected Time: {{ student.selectedTime }}</p>
+          <button @click="editBooking(student)">Reschedule My Class</button>
 
-        <button @click="editBooking(student)">Reschedule My Class</button>
-
-        <EditFormBookedClass
-          :availableClasses="availableClasses"
-          :bookedClasses="bookedClass"
-          v-if="selectedStudent === student"
-          :student="student"
-          @save="updateStudentClass"
-          @cancel="cancelEdit"
-        />
+          <EditFormBookedClass
+            :availableClasses="availableClasses"
+            :bookedClasses="bookedClass"
+            v-if="selectedStudent === student"
+            :student="student"
+            @save="updateStudentClass"
+            @cancel="cancelEdit"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -100,7 +101,6 @@ export default {
       fetchBookedClasses();
       const latestPosition = bookedClass.value.length - 1;
       bookedClasses.value = bookedClass.value[latestPosition];
-      console.log(bookedClasses.value);
     });
 
     return {
