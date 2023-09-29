@@ -17,14 +17,16 @@ This project is a web application that allows users to book and manage services 
 - Submission of service details to the server.
 - Success and error messages.
 
-### Student Class Dashboard
+### Student Class Booking
 - Display of booked classes.
+
+### Student Class Rescheduling
 - Rescheduling of classes.
-- Success and error handling for rescheduling.
+
 
 ### My Classes Display
 - Instructors can view a list of their available classes.
-- Real-time updates of instructor's classes.
+- Real-time inclusion of instructor's classes.
 
 
 ## Project setup
